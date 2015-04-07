@@ -13,8 +13,12 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    iterationmethod.cpp \
+    approximation.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    iterationmethod.h \
+    approximation.h
 
 FORMS    += mainwindow.ui
