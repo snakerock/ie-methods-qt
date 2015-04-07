@@ -1,44 +1,40 @@
 #include "approximation.h"
 
-template <typename... Arguments>
-double Approximation<Arguments...>::distance(std::array<double, N> a, std::array<double, N> b)
-{
-    double dist = 0;
-    for (int i = 0; i < N; ++i) {
-        double d = a[i] - b[i];
-        dist += d * d;
-    }
-    return sqrt(dist);
-}
+#include <QDebug>
 
-template <typename... Arguments>
-Approximation<Arguments...>::Approximation(std::function<double (Arguments...)> function)
-    : exactFunction(function), isGridFunction(false)
+Approximation::Approximation()
+    : isGridFunction(true)
 { }
 
-template <typename... Arguments>
-Approximation<Arguments...>::Approximation(std::map<std::array<double, N>, double> gridFunction)
+Approximation::Approximation(std::function<double (double)> &func)
+    : exactFunction(func), isGridFunction(false)
+{ }
+
+Approximation::Approximation(std::map<double, double> &gridFunction)
     : grid(gridFunction), isGridFunction(true)
 { }
 
-template <typename... Arguments>
-double Approximation<Arguments...>::F(double arguments...)
+void Approximation::addXY(double x, double y)
 {
     if (isGridFunction) {
-        std::array<double, N> args(arguments);
+        grid[x] = y;
+    }
+}
+
+double Approximation::F(double arguments)
+{
+    if (isGridFunction) {
         try {
-            return grid.at(args);
+            return grid.at(arguments);
         } catch (std::exception e) {
-            std::array<double, N> nearest;
-            double nearestDist;
+            double nearest;
 
             for (auto it = grid.begin(); it != grid.end(); it++) {
                 if (it == grid.begin()) {
                     nearest = it->first;
-                    nearestDist = distance(args, it->first);
                 } else {
-                    if (distance(args, it->first) < nearestDist) {
-                        nearest = grid.begin()->first;
+                    if (arguments < it->first) {
+                        break;
                     }
                 }
             }
@@ -50,8 +46,68 @@ double Approximation<Arguments...>::F(double arguments...)
     }
 }
 
-template <typename... Arguments>
-Approximation<Arguments...>::operator std::function<double (Arguments...)>()
+double Approximation::operator()(double arguments)
 {
-    return F;
+    return F(arguments);
 }
+/*
+Approximation Approximation::operator+(Approximation a)
+{
+    for (auto it = a.begin(); it != a.end(); it++) {
+        try {
+            grid.at(a->first);
+        } catch (std::exception e) {
+            qDebug() << "[WARNING] Summing approximations: different keys." << endl;
+            grid[a->first] = a->second;
+            continue;
+        }
+
+        grid[a->first] += a->second;
+    }
+}
+
+Approximation Approximation::operator-(Approximation a)
+{
+    for (auto it = a.begin(); it != a.end(); it++) {
+        try {
+            grid.at(a->first);
+        } catch (std::exception e) {
+            qDebug() << "[WARNING] Substracting approximations: different keys." << endl;
+            grid[a->first] = -a->second;
+            continue;
+        }
+
+        grid[a->first] -= a->second;
+    }
+}
+
+Approximation Approximation::operator*(Approximation a)
+{
+    for (auto it = a.begin(); it != a.end(); it++) {
+        try {
+            grid.at(a->first);
+        } catch (std::exception e) {
+            qDebug() << "[WARNING] Multiplexing approximations: different keys." << endl;
+            grid[a->first] = 0.0;
+            continue;
+        }
+
+        grid[a->first] *= a->second;
+    }
+}
+
+Approximation Approximation::operator*(Approximation a)
+{
+    for (auto it = a.begin(); it != a.end(); it++) {
+        try {
+            grid.at(a->first);
+        } catch (std::exception e) {
+            qDebug() << "[WARNING] Dividing approximations: different keys." << endl;
+            grid[a->first] = 0.0;
+            continue;
+        }
+
+        grid[a->first] /= a->second;
+    }
+}
+*/

@@ -10,26 +10,30 @@
 #include <array>
 
 // Grid function approximation
-template <typename... Arguments>
 class Approximation
 {
 private:
-    static constexpr int N = sizeof...(Arguments);
-    std::map<std::array<double, N>, double> grid;
-    std::function<double(Arguments...)> exactFunction;
+    std::map<double, double> grid;
+    std::function<double (double)> exactFunction;
 
     bool isGridFunction;
 
-    double distance(std::array<double, N> a, std::array<double, N> b);
+    double distance(double a, double b);
 
 public:
     Approximation();
-    Approximation(std::function<double(Arguments...)> function);
-    Approximation(std::map<std::array<double, N>, double> gridFunction);
+    Approximation(std::function<double (double)> &func);
+    Approximation(std::map<double, double> &gridFunction);
 
-    double F(double arguments...);
-    operator std::function<double(Arguments...)>();
-
+    void addXY(double x, double y);
+    double F(double);
+    double operator()(double arguments);
+    /*
+    Approximation operator+ (Approximation a);
+    Approximation operator- (Approximation a);
+    Approximation operator* (Approximation a);
+    Approximation operator/ (Approximation a);
+    */
 };
 
 #endif // APPROXIMATION_H
