@@ -9,7 +9,7 @@ IterationMethod::IterationMethod(
     f (rightPart),
     K (kernel),
     a (lowerBound),
-    b (lowerBound)
+    b (upperBound)
 {
-    Reinitialize();
+    //Reinitialize();
 }

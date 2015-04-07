@@ -4,6 +4,8 @@
 #include <functional>
 #include <vector>
 
+#include "approximation.h"
+
 class IterationMethod
 {
 private:
@@ -38,10 +40,10 @@ private:
     double step;
 
     // u[n], current approximation
-    std::vector<double> curU;
+    Approximation<double> *curU = nullptr;
 
     // u[n-1]
-    std::vector<double> prevU;
+    Approximation<double> *prevU = nullptr;
 
 public:
     IterationMethod (
@@ -52,8 +54,8 @@ public:
             );
 
     void Reinitialize ();
-    std::function<double> Iterate (int n = 1);
-    std::function<double> GetCurrentApproximation ();
+    std::function<double (double)> Iterate (int n = 1);
+    std::function<double (double)> GetCurrentApproximation ();
 };
 
 #endif // ITERATIONMETHOD_H
