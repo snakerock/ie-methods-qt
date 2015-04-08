@@ -6,34 +6,34 @@ Approximation::Approximation()
     : isGridFunction(true)
 { }
 
-Approximation::Approximation(std::function<double (double)> &func)
+Approximation::Approximation(c_fx_ptr &func)
     : exactFunction(func), isGridFunction(false)
 { }
 
-Approximation::Approximation(std::map<double, double> &gridFunction)
+Approximation::Approximation(std::map<Complex, Complex> &gridFunction)
     : grid(gridFunction), isGridFunction(true)
 { }
 
-void Approximation::addXY(double x, double y)
+void Approximation::addXY(const Complex x, const Complex y)
 {
     if (isGridFunction) {
         grid[x] = y;
     }
 }
 
-double Approximation::F(double arguments)
+Complex Approximation::F(const Complex x)
 {
     if (isGridFunction) {
         try {
-            return grid.at(arguments);
+            return grid.at(x);
         } catch (std::exception e) {
-            double nearest;
+            Complex nearest;
 
             for (auto it = grid.begin(); it != grid.end(); it++) {
                 if (it == grid.begin()) {
                     nearest = it->first;
                 } else {
-                    if (arguments < it->first) {
+                    if (x < it->first) {
                         break;
                     }
                 }
@@ -42,13 +42,13 @@ double Approximation::F(double arguments)
             return grid.at(nearest);
         }
     } else {
-        return exactFunction(arguments);
+        return exactFunction(x);
     }
 }
 
-double Approximation::operator()(double arguments)
+Complex Approximation::operator()(const Complex x)
 {
-    return F(arguments);
+    return F(x);
 }
 /*
 Approximation Approximation::operator+(Approximation a)

@@ -29,10 +29,9 @@ void IterationMethod::Reinitialize()
 double IterationMethod::integrate(Approximation *app)
 {
     double result = 0;
-    int subintervals = (b - a) / dx;
 
-    for (int i = 1; i <= subintervals; ++i){
-        result += (*app)(a + dx * (i - 0.5));
+    for (double x = a + dx * 0.5; x < b; x += dx){
+        result += (*app)(x);
     }
     result *= dx;
 
@@ -47,9 +46,38 @@ std::function<double (double)> IterationMethod::Iterate(int n)
 
         curU = new Approximation();
         for (double x = a + dx * 0.5; x < b; x += dx) {
-            double u = (*prevU)(x);
 
             std::function<double (double)> Kx = [this, x] (double y) { return K(x, y); };
+            Approximation appKx(Kx);
+            double D = integrate(&appKx);
+
+            std::function<double (double)> Kux = [this, x] (double y) { return K(x, y) * (*prevU)(y); };
+            Approximation appKux(Kux);
+            double IKux = integrate(&appKux);
+
+            curU->addXY(x, (*prevU)(x) + (f(x) - IKux) / D);
+        }
+    }
+
+    return *curU;
+}
+
+std::function<double (double)> IterationMethod::Iterate(int n)
+{
+    for (int m = 0; m < n; ++m) {
+        delete prevU;
+        prevU = curU;
+
+        curU = new Approximation();
+        for (double x = a + dx * 0.5; x < b; x += dx) {
+
+            std::function<double (double)> Kx = [this, x] (double y) {
+                return integrate(Approximation(
+                                     [this, x] (double t) {
+                        return K(t, y) * K(t, x);
+                    }
+                ));
+            };
             Approximation appKx(Kx);
             double D = integrate(&appKx);
 
