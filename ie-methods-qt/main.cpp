@@ -9,6 +9,7 @@
 #include "approximation.h"
 #include "iterationmethodpositive.h"
 #include "iterationmethodnegative.h"
+#include "iterationmethoddirichletkernel.h"
 #include "ietypes.h"
 
 double ex(double x, double y)
@@ -52,32 +53,28 @@ Complex f_e_ixy(double y)
     return -Complex(0.0, 1.0) * (-1.0 + std::exp(Complex(0.0, 1.0) * y)) / y;
 }
 
-double getDifference(c_fx_ptr a, c_fx_ptr b)
+double real_direchlet_f(double y)
 {
-    double d = 0;
-    for (double x = 10e-3 * 0.5; x <= 1.0; x += 10e-3) {
-        double t = std::abs(a(x) - b(x));
-        d += t * t;
-    }
-    return sqrt(d);
+    return std::real(-Complex(0.0, 1.0) * (-1.0 + std::exp(Complex(0.0, 1.0) * y)) / y);
 }
 
 int main(int argc, char *argv[])
 {
     //IterationMethodNegative im(Complex::RealFunctionWrap(fexex), Complex::RealFunctionWrap(ex));
-    IterationMethodNegative im(f_e_ixy, kernel_e_ixy);
-    c_fx_ptr prevU = im.Iterate();
-    c_fx_ptr curU = im.Iterate();
+    //IterationMethodNegative<Complex> im(f_e_ixy, kernel_e_ixy);
+    IterationMethodDirichletKernel im(real_direchlet_f);
+    fx_t<double> prevU = im.Iterate();
+    fx_t<double> curU = im.Iterate();
     double prevDiff, curDiff;
-    curDiff = getDifference(curU, prevU);
+    curDiff = im.getDifference(curU, prevU);
 
-    for (int i = 1; i < 1; ++i) {
+    for (int i = 1; i < 10; ++i) {
         prevDiff = curDiff;
         prevU = curU;
         curU = im.Iterate();
 
         //curDiff = getDifference(curU, Complex::RealFunctionWrap(exp));
-        curDiff = getDifference(curU, prevU);//[] (Complex x) -> Complex { return 1.0; });
+        curDiff = im.getDifference(curU, prevU);//[] (Complex x) -> Complex { return 1.0; });
         std::cout << "|| u[" << i + 1 << "] - u[" << i << "] || = " << curDiff << std::endl;
         if (curDiff > prevDiff) {
             std::cout << "[WARNING] Divergence" << std::endl;

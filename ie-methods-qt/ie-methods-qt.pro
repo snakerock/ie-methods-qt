@@ -15,15 +15,13 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
-    approximation.cpp \
-    iterationmethodnegative.cpp \
-    iterationmethodpositive.cpp
+        mainwindow.cpp
 
 HEADERS  += mainwindow.h \
     approximation.h \
     iterationmethodnegative.h \
     iterationmethodpositive.h \
-    ietypes.h
+    ietypes.h \
+    iterationmethoddirichletkernel.h
 
 FORMS    += mainwindow.ui

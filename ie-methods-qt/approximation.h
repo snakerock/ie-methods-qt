@@ -8,40 +8,77 @@
 #include <map>
 #include <array>
 
-#include "complex.h"
 #include "ietypes.h"
 
 // Grid function approximation
+template <typename T>
 class Approximation
 {
 private:
     // Grid function values [x, y] = [key, value]
-    std::map<double, Complex> grid;
+    std::map<double, T> grid;
 
     // Pointer to exact function if present
-    c_fx_ptr exactFunction;
+    fx_t<T> exactFunction;
 
     // False by default
     bool isGridFunction;
 
 public:
     // Create empty approximation of grid function, fill by addXY
-    Approximation();
+    Approximation()
+        : isGridFunction(true)
+    { }
 
     // Wrap exact function to Approximation
-    Approximation(c_fx_ptr &func);
+    Approximation(fx_t<T> &func)
+        : exactFunction(func), isGridFunction(false)
+    { }
 
     // Create grid function approximation by existing values
-    Approximation(std::map<double, Complex> &gridFunction);
+    Approximation(std::map<double, T> &gridFunction)
+        : grid(gridFunction), isGridFunction(true)
+    { }
 
     // Add [x, y] as [key, value] to grid
-    void addXY(const double x, const Complex y);
+    void addXY(const double x, const T y)
+    {
+        if (isGridFunction) {
+            grid[x] = y;
+        }
+    }
 
     // Get approximated function value by x
-    Complex F(const double x);
+    T F(const double x)
+    {
+        if (isGridFunction) {
+            try {
+                return grid.at(x);
+            } catch (std::exception e) {
+                double nearest;
+
+                for (auto it = grid.begin(); it != grid.end(); it++) {
+                    if (it == grid.begin()) {
+                        nearest = it->first;
+                    } else {
+                        if (x < it->first) {
+                            break;
+                        }
+                    }
+                }
+
+                return grid.at(nearest);
+            }
+        } else {
+            return exactFunction(x);
+        }
+    }
 
     // Use Approximation as functor, calls F(x)
-    Complex operator()(const double x);
+    T operator()(const double x)
+    {
+        return F(x);
+    }
 
     /*
     Approximation operator+ (Approximation a);

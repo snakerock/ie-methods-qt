@@ -5,9 +5,11 @@
 #include <complex>
 
 typedef std::complex<double> Complex;
-typedef std::function<Complex (double)> c_fx_ptr;
-typedef std::function<Complex (double, double)> c_fxy_ptr;
-typedef std::function<double (double)> r_fx_ptr;
-typedef std::function<double (double, double)> r_fxy_ptr;
+
+template <typename T>
+using fx_t = std::function<T (double)>;
+
+template <typename T>
+using fxy_t = std::function<T (double, double)>;
 
 #endif // IETYPES_H

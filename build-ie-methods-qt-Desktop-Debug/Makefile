@@ -46,15 +46,9 @@ OBJECTS_DIR   = ./
 ####### Files
 
 SOURCES       = ../ie-methods-qt/main.cpp \
-		../ie-methods-qt/mainwindow.cpp \
-		../ie-methods-qt/approximation.cpp \
-		../ie-methods-qt/iterationmethodnegative.cpp \
-		../ie-methods-qt/iterationmethodpositive.cpp moc_mainwindow.cpp
+		../ie-methods-qt/mainwindow.cpp moc_mainwindow.cpp
 OBJECTS       = main.o \
 		mainwindow.o \
-		approximation.o \
-		iterationmethodnegative.o \
-		iterationmethodpositive.o \
 		moc_mainwindow.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/shell-unix.conf \
@@ -290,7 +284,7 @@ qmake_all: FORCE
 
 dist: 
 	@test -d .tmp/ie-methods-qt1.0.0 || mkdir -p .tmp/ie-methods-qt1.0.0
-	$(COPY_FILE) --parents $(SOURCES) $(DIST) .tmp/ie-methods-qt1.0.0/ && $(COPY_FILE) --parents ../ie-methods-qt/mainwindow.h ../ie-methods-qt/approximation.h ../ie-methods-qt/iterationmethodnegative.h ../ie-methods-qt/iterationmethodpositive.h ../ie-methods-qt/ietypes.h .tmp/ie-methods-qt1.0.0/ && $(COPY_FILE) --parents ../ie-methods-qt/main.cpp ../ie-methods-qt/mainwindow.cpp ../ie-methods-qt/approximation.cpp ../ie-methods-qt/iterationmethodnegative.cpp ../ie-methods-qt/iterationmethodpositive.cpp .tmp/ie-methods-qt1.0.0/ && $(COPY_FILE) --parents ../ie-methods-qt/mainwindow.ui .tmp/ie-methods-qt1.0.0/ && (cd `dirname .tmp/ie-methods-qt1.0.0` && $(TAR) ie-methods-qt1.0.0.tar ie-methods-qt1.0.0 && $(COMPRESS) ie-methods-qt1.0.0.tar) && $(MOVE) `dirname .tmp/ie-methods-qt1.0.0`/ie-methods-qt1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/ie-methods-qt1.0.0
+	$(COPY_FILE) --parents $(SOURCES) $(DIST) .tmp/ie-methods-qt1.0.0/ && $(COPY_FILE) --parents ../ie-methods-qt/mainwindow.h ../ie-methods-qt/approximation.h ../ie-methods-qt/iterationmethodnegative.h ../ie-methods-qt/iterationmethodpositive.h ../ie-methods-qt/ietypes.h ../ie-methods-qt/iterationmethoddirichletkernel.h .tmp/ie-methods-qt1.0.0/ && $(COPY_FILE) --parents ../ie-methods-qt/main.cpp ../ie-methods-qt/mainwindow.cpp .tmp/ie-methods-qt1.0.0/ && $(COPY_FILE) --parents ../ie-methods-qt/mainwindow.ui .tmp/ie-methods-qt1.0.0/ && (cd `dirname .tmp/ie-methods-qt1.0.0` && $(TAR) ie-methods-qt1.0.0.tar ie-methods-qt1.0.0 && $(COMPRESS) ie-methods-qt1.0.0.tar) && $(MOVE) `dirname .tmp/ie-methods-qt1.0.0`/ie-methods-qt1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/ie-methods-qt1.0.0
 
 
 clean:compiler_clean 
@@ -727,95 +721,6 @@ mainwindow.o: ../ie-methods-qt/mainwindow.cpp ../ie-methods-qt/mainwindow.h \
 		../ie-methods-qt/approximation.h \
 		../ie-methods-qt/ietypes.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../ie-methods-qt/mainwindow.cpp
-
-approximation.o: ../ie-methods-qt/approximation.cpp ../ie-methods-qt/approximation.h \
-		../ie-methods-qt/ietypes.h \
-		/usr/include/qt5/QtCore/QDebug \
-		/usr/include/qt5/QtCore/qdebug.h \
-		/usr/include/qt5/QtCore/qalgorithms.h \
-		/usr/include/qt5/QtCore/qglobal.h \
-		/usr/include/qt5/QtCore/qconfig.h \
-		/usr/include/qt5/QtCore/qfeatures.h \
-		/usr/include/qt5/QtCore/qsystemdetection.h \
-		/usr/include/qt5/QtCore/qprocessordetection.h \
-		/usr/include/qt5/QtCore/qcompilerdetection.h \
-		/usr/include/qt5/QtCore/qglobalstatic.h \
-		/usr/include/qt5/QtCore/qatomic.h \
-		/usr/include/qt5/QtCore/qbasicatomic.h \
-		/usr/include/qt5/QtCore/qatomic_bootstrap.h \
-		/usr/include/qt5/QtCore/qgenericatomic.h \
-		/usr/include/qt5/QtCore/qatomic_msvc.h \
-		/usr/include/qt5/QtCore/qatomic_integrity.h \
-		/usr/include/qt5/QtCore/qoldbasicatomic.h \
-		/usr/include/qt5/QtCore/qatomic_vxworks.h \
-		/usr/include/qt5/QtCore/qatomic_power.h \
-		/usr/include/qt5/QtCore/qatomic_alpha.h \
-		/usr/include/qt5/QtCore/qatomic_armv7.h \
-		/usr/include/qt5/QtCore/qatomic_armv6.h \
-		/usr/include/qt5/QtCore/qatomic_armv5.h \
-		/usr/include/qt5/QtCore/qatomic_bfin.h \
-		/usr/include/qt5/QtCore/qatomic_ia64.h \
-		/usr/include/qt5/QtCore/qatomic_mips.h \
-		/usr/include/qt5/QtCore/qatomic_s390.h \
-		/usr/include/qt5/QtCore/qatomic_sh4a.h \
-		/usr/include/qt5/QtCore/qatomic_sparc.h \
-		/usr/include/qt5/QtCore/qatomic_gcc.h \
-		/usr/include/qt5/QtCore/qatomic_x86.h \
-		/usr/include/qt5/QtCore/qatomic_cxx11.h \
-		/usr/include/qt5/QtCore/qatomic_unix.h \
-		/usr/include/qt5/QtCore/qmutex.h \
-		/usr/include/qt5/QtCore/qlogging.h \
-		/usr/include/qt5/QtCore/qflags.h \
-		/usr/include/qt5/QtCore/qtypeinfo.h \
-		/usr/include/qt5/QtCore/qtypetraits.h \
-		/usr/include/qt5/QtCore/qsysinfo.h \
-		/usr/include/qt5/QtCore/qhash.h \
-		/usr/include/qt5/QtCore/qchar.h \
-		/usr/include/qt5/QtCore/qiterator.h \
-		/usr/include/qt5/QtCore/qlist.h \
-		/usr/include/qt5/QtCore/qrefcount.h \
-		/usr/include/qt5/QtCore/qpair.h \
-		/usr/include/qt5/QtCore/qmap.h \
-		/usr/include/qt5/QtCore/qtextstream.h \
-		/usr/include/qt5/QtCore/qiodevice.h \
-		/usr/include/qt5/QtCore/qobject.h \
-		/usr/include/qt5/QtCore/qobjectdefs.h \
-		/usr/include/qt5/QtCore/qnamespace.h \
-		/usr/include/qt5/QtCore/qobjectdefs_impl.h \
-		/usr/include/qt5/QtCore/qstring.h \
-		/usr/include/qt5/QtCore/qbytearray.h \
-		/usr/include/qt5/QtCore/qarraydata.h \
-		/usr/include/qt5/QtCore/qstringbuilder.h \
-		/usr/include/qt5/QtCore/qcoreevent.h \
-		/usr/include/qt5/QtCore/qscopedpointer.h \
-		/usr/include/qt5/QtCore/qmetatype.h \
-		/usr/include/qt5/QtCore/qvarlengtharray.h \
-		/usr/include/qt5/QtCore/qcontainerfwd.h \
-		/usr/include/qt5/QtCore/qisenum.h \
-		/usr/include/qt5/QtCore/qobject_impl.h \
-		/usr/include/qt5/QtCore/qlocale.h \
-		/usr/include/qt5/QtCore/qvariant.h \
-		/usr/include/qt5/QtCore/qstringlist.h \
-		/usr/include/qt5/QtCore/qdatastream.h \
-		/usr/include/qt5/QtCore/qregexp.h \
-		/usr/include/qt5/QtCore/qstringmatcher.h \
-		/usr/include/qt5/QtCore/qshareddata.h \
-		/usr/include/qt5/QtCore/qvector.h \
-		/usr/include/qt5/QtCore/qpoint.h \
-		/usr/include/qt5/QtCore/qset.h \
-		/usr/include/qt5/QtCore/qcontiguouscache.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o approximation.o ../ie-methods-qt/approximation.cpp
-
-iterationmethodnegative.o: ../ie-methods-qt/iterationmethodnegative.cpp ../ie-methods-qt/iterationmethodnegative.h \
-		../ie-methods-qt/iterationmethodpositive.h \
-		../ie-methods-qt/approximation.h \
-		../ie-methods-qt/ietypes.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o iterationmethodnegative.o ../ie-methods-qt/iterationmethodnegative.cpp
-
-iterationmethodpositive.o: ../ie-methods-qt/iterationmethodpositive.cpp ../ie-methods-qt/iterationmethodpositive.h \
-		../ie-methods-qt/approximation.h \
-		../ie-methods-qt/ietypes.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o iterationmethodpositive.o ../ie-methods-qt/iterationmethodpositive.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp
