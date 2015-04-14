@@ -10,24 +10,24 @@ Approximation::Approximation(c_fx_ptr &func)
     : exactFunction(func), isGridFunction(false)
 { }
 
-Approximation::Approximation(std::map<Complex, Complex> &gridFunction)
+Approximation::Approximation(std::map<double, Complex> &gridFunction)
     : grid(gridFunction), isGridFunction(true)
 { }
 
-void Approximation::addXY(const Complex x, const Complex y)
+void Approximation::addXY(const double x, const Complex y)
 {
     if (isGridFunction) {
         grid[x] = y;
     }
 }
 
-Complex Approximation::F(const Complex x)
+Complex Approximation::F(const double x)
 {
     if (isGridFunction) {
         try {
             return grid.at(x);
         } catch (std::exception e) {
-            Complex nearest;
+            double nearest;
 
             for (auto it = grid.begin(); it != grid.end(); it++) {
                 if (it == grid.begin()) {
@@ -46,68 +46,7 @@ Complex Approximation::F(const Complex x)
     }
 }
 
-Complex Approximation::operator()(const Complex x)
+Complex Approximation::operator()(const double x)
 {
     return F(x);
 }
-/*
-Approximation Approximation::operator+(Approximation a)
-{
-    for (auto it = a.begin(); it != a.end(); it++) {
-        try {
-            grid.at(a->first);
-        } catch (std::exception e) {
-            qDebug() << "[WARNING] Summing approximations: different keys." << endl;
-            grid[a->first] = a->second;
-            continue;
-        }
-
-        grid[a->first] += a->second;
-    }
-}
-
-Approximation Approximation::operator-(Approximation a)
-{
-    for (auto it = a.begin(); it != a.end(); it++) {
-        try {
-            grid.at(a->first);
-        } catch (std::exception e) {
-            qDebug() << "[WARNING] Substracting approximations: different keys." << endl;
-            grid[a->first] = -a->second;
-            continue;
-        }
-
-        grid[a->first] -= a->second;
-    }
-}
-
-Approximation Approximation::operator*(Approximation a)
-{
-    for (auto it = a.begin(); it != a.end(); it++) {
-        try {
-            grid.at(a->first);
-        } catch (std::exception e) {
-            qDebug() << "[WARNING] Multiplexing approximations: different keys." << endl;
-            grid[a->first] = 0.0;
-            continue;
-        }
-
-        grid[a->first] *= a->second;
-    }
-}
-
-Approximation Approximation::operator*(Approximation a)
-{
-    for (auto it = a.begin(); it != a.end(); it++) {
-        try {
-            grid.at(a->first);
-        } catch (std::exception e) {
-            qDebug() << "[WARNING] Dividing approximations: different keys." << endl;
-            grid[a->first] = 0.0;
-            continue;
-        }
-
-        grid[a->first] /= a->second;
-    }
-}
-*/

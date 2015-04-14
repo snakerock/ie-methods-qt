@@ -37,9 +37,9 @@ public:
     IterationMethodNegative (
             c_fx_ptr rightPart,
             c_fxy_ptr kernel,
-            Complex lowerBound = 0.0,
-            Complex upperBound = 1.0,
-            Complex step = 10e-3
+            double lowerBound = 0.0,
+            double upperBound = 1.0,
+            double step = 10e-3
             );
 
     // Iterate n steps next, preserving computed state between calls

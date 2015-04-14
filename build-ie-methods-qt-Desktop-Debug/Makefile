@@ -49,14 +49,12 @@ SOURCES       = ../ie-methods-qt/main.cpp \
 		../ie-methods-qt/mainwindow.cpp \
 		../ie-methods-qt/approximation.cpp \
 		../ie-methods-qt/iterationmethodnegative.cpp \
-		../ie-methods-qt/iterationmethodpositive.cpp \
-		../ie-methods-qt/complex.cpp moc_mainwindow.cpp
+		../ie-methods-qt/iterationmethodpositive.cpp moc_mainwindow.cpp
 OBJECTS       = main.o \
 		mainwindow.o \
 		approximation.o \
 		iterationmethodnegative.o \
 		iterationmethodpositive.o \
-		complex.o \
 		moc_mainwindow.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/shell-unix.conf \
@@ -292,7 +290,7 @@ qmake_all: FORCE
 
 dist: 
 	@test -d .tmp/ie-methods-qt1.0.0 || mkdir -p .tmp/ie-methods-qt1.0.0
-	$(COPY_FILE) --parents $(SOURCES) $(DIST) .tmp/ie-methods-qt1.0.0/ && $(COPY_FILE) --parents ../ie-methods-qt/mainwindow.h ../ie-methods-qt/approximation.h ../ie-methods-qt/iterationmethodnegative.h ../ie-methods-qt/iterationmethodpositive.h ../ie-methods-qt/complex.h ../ie-methods-qt/ietypes.h .tmp/ie-methods-qt1.0.0/ && $(COPY_FILE) --parents ../ie-methods-qt/main.cpp ../ie-methods-qt/mainwindow.cpp ../ie-methods-qt/approximation.cpp ../ie-methods-qt/iterationmethodnegative.cpp ../ie-methods-qt/iterationmethodpositive.cpp ../ie-methods-qt/complex.cpp .tmp/ie-methods-qt1.0.0/ && $(COPY_FILE) --parents ../ie-methods-qt/mainwindow.ui .tmp/ie-methods-qt1.0.0/ && (cd `dirname .tmp/ie-methods-qt1.0.0` && $(TAR) ie-methods-qt1.0.0.tar ie-methods-qt1.0.0 && $(COMPRESS) ie-methods-qt1.0.0.tar) && $(MOVE) `dirname .tmp/ie-methods-qt1.0.0`/ie-methods-qt1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/ie-methods-qt1.0.0
+	$(COPY_FILE) --parents $(SOURCES) $(DIST) .tmp/ie-methods-qt1.0.0/ && $(COPY_FILE) --parents ../ie-methods-qt/mainwindow.h ../ie-methods-qt/approximation.h ../ie-methods-qt/iterationmethodnegative.h ../ie-methods-qt/iterationmethodpositive.h ../ie-methods-qt/ietypes.h .tmp/ie-methods-qt1.0.0/ && $(COPY_FILE) --parents ../ie-methods-qt/main.cpp ../ie-methods-qt/mainwindow.cpp ../ie-methods-qt/approximation.cpp ../ie-methods-qt/iterationmethodnegative.cpp ../ie-methods-qt/iterationmethodpositive.cpp .tmp/ie-methods-qt1.0.0/ && $(COPY_FILE) --parents ../ie-methods-qt/mainwindow.ui .tmp/ie-methods-qt1.0.0/ && (cd `dirname .tmp/ie-methods-qt1.0.0` && $(TAR) ie-methods-qt1.0.0.tar ie-methods-qt1.0.0 && $(COMPRESS) ie-methods-qt1.0.0.tar) && $(MOVE) `dirname .tmp/ie-methods-qt1.0.0`/ie-methods-qt1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/ie-methods-qt1.0.0
 
 
 clean:compiler_clean 
@@ -570,7 +568,6 @@ main.o: ../ie-methods-qt/main.cpp ../ie-methods-qt/mainwindow.h \
 		/usr/include/qt5/QtGui/qguiapplication.h \
 		/usr/include/qt5/QtGui/qinputmethod.h \
 		../ie-methods-qt/approximation.h \
-		../ie-methods-qt/complex.h \
 		../ie-methods-qt/ietypes.h \
 		../ie-methods-qt/iterationmethodpositive.h \
 		../ie-methods-qt/iterationmethodnegative.h
@@ -728,12 +725,10 @@ mainwindow.o: ../ie-methods-qt/mainwindow.cpp ../ie-methods-qt/mainwindow.h \
 		/usr/include/qt5/QtWidgets/qtoolbar.h \
 		/usr/include/qt5/QtWidgets/QWidget \
 		../ie-methods-qt/approximation.h \
-		../ie-methods-qt/complex.h \
 		../ie-methods-qt/ietypes.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../ie-methods-qt/mainwindow.cpp
 
 approximation.o: ../ie-methods-qt/approximation.cpp ../ie-methods-qt/approximation.h \
-		../ie-methods-qt/complex.h \
 		../ie-methods-qt/ietypes.h \
 		/usr/include/qt5/QtCore/QDebug \
 		/usr/include/qt5/QtCore/qdebug.h \
@@ -814,19 +809,13 @@ approximation.o: ../ie-methods-qt/approximation.cpp ../ie-methods-qt/approximati
 iterationmethodnegative.o: ../ie-methods-qt/iterationmethodnegative.cpp ../ie-methods-qt/iterationmethodnegative.h \
 		../ie-methods-qt/iterationmethodpositive.h \
 		../ie-methods-qt/approximation.h \
-		../ie-methods-qt/complex.h \
 		../ie-methods-qt/ietypes.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o iterationmethodnegative.o ../ie-methods-qt/iterationmethodnegative.cpp
 
 iterationmethodpositive.o: ../ie-methods-qt/iterationmethodpositive.cpp ../ie-methods-qt/iterationmethodpositive.h \
 		../ie-methods-qt/approximation.h \
-		../ie-methods-qt/complex.h \
 		../ie-methods-qt/ietypes.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o iterationmethodpositive.o ../ie-methods-qt/iterationmethodpositive.cpp
-
-complex.o: ../ie-methods-qt/complex.cpp ../ie-methods-qt/complex.h \
-		../ie-methods-qt/ietypes.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o complex.o ../ie-methods-qt/complex.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp

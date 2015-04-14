@@ -18,14 +18,12 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     approximation.cpp \
     iterationmethodnegative.cpp \
-    iterationmethodpositive.cpp \
-    complex.cpp
+    iterationmethodpositive.cpp
 
 HEADERS  += mainwindow.h \
     approximation.h \
     iterationmethodnegative.h \
     iterationmethodpositive.h \
-    complex.h \
     ietypes.h
 
 FORMS    += mainwindow.ui

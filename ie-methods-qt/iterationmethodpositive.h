@@ -28,10 +28,10 @@ protected:
     c_fxy_ptr K;
 
     // Lower bound
-    Complex a;
+    double a;
 
     // Upper bound
-    Complex b;
+    double b;
 
     /*
      * METHOD PARAMETERS
@@ -46,7 +46,7 @@ protected:
      */
 
     // Integration step
-    Complex dx;
+    double dx;
 
     // u[n], current approximation
     Approximation curU;
@@ -61,9 +61,9 @@ public:
     IterationMethodPositive (
             c_fx_ptr rightPart,
             c_fxy_ptr kernel,
-            Complex lowerBound = 0.0,
-            Complex upperBound = 1.0,
-            Complex step = 10e-3
+            double lowerBound = 0.0,
+            double upperBound = 1.0,
+            double step = 10e-3
             );
 
     ~IterationMethodPositive();

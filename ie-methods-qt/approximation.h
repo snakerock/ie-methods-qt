@@ -16,7 +16,7 @@ class Approximation
 {
 private:
     // Grid function values [x, y] = [key, value]
-    std::map<Complex, Complex> grid;
+    std::map<double, Complex> grid;
 
     // Pointer to exact function if present
     c_fx_ptr exactFunction;
@@ -32,16 +32,16 @@ public:
     Approximation(c_fx_ptr &func);
 
     // Create grid function approximation by existing values
-    Approximation(std::map<Complex, Complex> &gridFunction);
+    Approximation(std::map<double, Complex> &gridFunction);
 
     // Add [x, y] as [key, value] to grid
-    void addXY(const Complex x, const Complex y);
+    void addXY(const double x, const Complex y);
 
     // Get approximated function value by x
-    Complex F(const Complex x);
+    Complex F(const double x);
 
     // Use Approximation as functor, calls F(x)
-    Complex operator()(const Complex x);
+    Complex operator()(const double x);
 
     /*
     Approximation operator+ (Approximation a);
