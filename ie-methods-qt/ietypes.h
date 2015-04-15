@@ -4,12 +4,9 @@
 #include <functional>
 #include <complex>
 
-typedef std::complex<double> Complex;
-
-template <typename T>
-using fx_t = std::function<T (double)>;
-
-template <typename T>
-using fxy_t = std::function<T (double, double)>;
+using Complex = std::complex<double>;
+using complex_fx_t = std::function<Complex (double)>;
+using fx_t = std::function<double (double)>;
+using fxy_t = std::function<double (double, double)>;
 
 #endif // IETYPES_H

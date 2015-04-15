@@ -11,15 +11,14 @@
 #include "ietypes.h"
 
 // Grid function approximation
-template <typename T>
 class Approximation
 {
 private:
     // Grid function values [x, y] = [key, value]
-    std::map<double, T> grid;
+    std::map<double, double> grid;
 
     // Pointer to exact function if present
-    fx_t<T> exactFunction;
+    fx_t exactFunction;
 
     // False by default
     bool isGridFunction;
@@ -31,17 +30,17 @@ public:
     { }
 
     // Wrap exact function to Approximation
-    Approximation(fx_t<T> &func)
+    Approximation(fx_t &func)
         : exactFunction(func), isGridFunction(false)
     { }
 
     // Create grid function approximation by existing values
-    Approximation(std::map<double, T> &gridFunction)
+    Approximation(std::map<double, double> &gridFunction)
         : grid(gridFunction), isGridFunction(true)
     { }
 
     // Add [x, y] as [key, value] to grid
-    void addXY(const double x, const T y)
+    void addXY(const double x, const double y)
     {
         if (isGridFunction) {
             grid[x] = y;
@@ -49,7 +48,7 @@ public:
     }
 
     // Get approximated function value by x
-    T F(const double x)
+    double F(const double x)
     {
         if (isGridFunction) {
             try {
@@ -75,17 +74,11 @@ public:
     }
 
     // Use Approximation as functor, calls F(x)
-    T operator()(const double x)
+    double operator()(const double x)
     {
         return F(x);
     }
 
-    /*
-    Approximation operator+ (Approximation a);
-    Approximation operator- (Approximation a);
-    Approximation operator* (Approximation a);
-    Approximation operator/ (Approximation a);
-    */
 };
 
 #endif // APPROXIMATION_H

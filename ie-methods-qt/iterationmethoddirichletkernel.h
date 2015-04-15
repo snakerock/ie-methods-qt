@@ -1,62 +1,53 @@
 #ifndef ITERATIONMETHODDIRICHLETKERNEL_H
 #define ITERATIONMETHODDIRICHLETKERNEL_H
 
+#include "mathextensions.h"
 #include "ietypes.h"
 #include "iterationmethodpositive.h"
 
-class IterationMethodDirichletKernel : public IterationMethodPositive<double>
+class IterationMethodDirichletKernel : public IterationMethodPositive
 {
 protected:
+    /*
+     * MATHS PARAMETERS
+     *
+     * Consider equation:
+     *
+     * (integral from 0 to b) e^(ikxy) * u(y) * dy = f(x),
+     *
+     * where k is positive parameter,
+     * f(x) is complex function
+     */
+
+    // Parameter k > 0
     double k;
 
-    double dirichletKernel(double x, double y)
-    {
-        double arg = k * std::abs(x - y);
-        return arg != 0.0 ? std::sin(arg) / arg : 1.0;
-    }
+    /*
+     * METHOD PARAMETERS
+     *
+     * Consider iterative method:
+     *
+     *                       (F(x) - (integral from 0 to b) K(x,y) * u[n-1](y) * dy)
+     * u[n](x) = u[n-1](x) + -------------------------------------------------------,
+     *                                                 D(x)
+     * K(x, y) = sin(k * b * (y - x) / (k * (y - x),
+     * D(x) = (integral from 0 to b) K(x,y) * dy,
+     * F(x) = (integral from 0 to b) (cos(kxt) * Re(f(t)) + sin(kxt) * Im(f(t))) * dt,
+     * u[0](x) = 0;
+     */
+
+    // Kernel function K(x, y) = sin(k * b * (y - x) / (k * (y - x)
+    virtual double K(double x, double y) const override;
 
 public:
     IterationMethodDirichletKernel(
-            fx_t<double> rightPart,
+            complex_fx_t rightPart,
             double parameterK = 1.0,
-            double lowerBound = 0.0,
             double upperBound = 1.0,
-            double step = 10e-3
-            ) :
-        IterationMethodPositive<double>(rightPart, fxy_t<double>(dirichletKernel), lowerBound, upperBound, step),
-        k (parameterK)
-    { }
+            double step = 1e-3
+            );
 
-    // Iterate n steps next, preserving computed state between calls
-    virtual fx_t<double> Iterate (int n = 1) override
-    {
-        for (int m = 0; m < n; ++m) {
-            this->prevU = this->curU;
-
-            this->curU = Approximation<double>();
-            for (double x = this->a + this->dx * 0.5; x < this->b; x += this->dx) {
-
-                fx_t<double> Kx = [this, x] (double y) { return this->K(x, y); };
-                double D = this->integrate(Kx);
-
-                fx_t<double> Kux = [this, x] (double y) { return this->K(x, y) * this->prevU(y); };
-                double IKux = this->integrate(Kux);
-
-                fx_t<double> F = [this] (double x) {
-                    fx_t<double> Kft = [this, x] (double t) {
-                        return std::cos(-k * x * t) * this->f(t);
-                    };
-
-                    return this->integrate(Kft);
-                };
-
-                this->curU.addXY(x, this->prevU(x) + (F(x) - IKux) / D);
-            }
-        }
-
-        return this->curU;
-    }
-
+    double getParameterK() const;
 };
 
 #endif // ITERATIONMETHODDIRICHLETKERNEL_H

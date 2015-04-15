@@ -46,9 +46,17 @@ OBJECTS_DIR   = ./
 ####### Files
 
 SOURCES       = ../ie-methods-qt/main.cpp \
-		../ie-methods-qt/mainwindow.cpp moc_mainwindow.cpp
+		../ie-methods-qt/mainwindow.cpp \
+		../ie-methods-qt/iterationmethodpositive.cpp \
+		../ie-methods-qt/iterationmethoddirichletkernel.cpp \
+		../ie-methods-qt/iterationmethodcommon.cpp \
+		../ie-methods-qt/mathextensions.cpp moc_mainwindow.cpp
 OBJECTS       = main.o \
 		mainwindow.o \
+		iterationmethodpositive.o \
+		iterationmethoddirichletkernel.o \
+		iterationmethodcommon.o \
+		mathextensions.o \
 		moc_mainwindow.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/shell-unix.conf \
@@ -284,7 +292,7 @@ qmake_all: FORCE
 
 dist: 
 	@test -d .tmp/ie-methods-qt1.0.0 || mkdir -p .tmp/ie-methods-qt1.0.0
-	$(COPY_FILE) --parents $(SOURCES) $(DIST) .tmp/ie-methods-qt1.0.0/ && $(COPY_FILE) --parents ../ie-methods-qt/mainwindow.h ../ie-methods-qt/approximation.h ../ie-methods-qt/iterationmethodnegative.h ../ie-methods-qt/iterationmethodpositive.h ../ie-methods-qt/ietypes.h ../ie-methods-qt/iterationmethoddirichletkernel.h .tmp/ie-methods-qt1.0.0/ && $(COPY_FILE) --parents ../ie-methods-qt/main.cpp ../ie-methods-qt/mainwindow.cpp .tmp/ie-methods-qt1.0.0/ && $(COPY_FILE) --parents ../ie-methods-qt/mainwindow.ui .tmp/ie-methods-qt1.0.0/ && (cd `dirname .tmp/ie-methods-qt1.0.0` && $(TAR) ie-methods-qt1.0.0.tar ie-methods-qt1.0.0 && $(COMPRESS) ie-methods-qt1.0.0.tar) && $(MOVE) `dirname .tmp/ie-methods-qt1.0.0`/ie-methods-qt1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/ie-methods-qt1.0.0
+	$(COPY_FILE) --parents $(SOURCES) $(DIST) .tmp/ie-methods-qt1.0.0/ && $(COPY_FILE) --parents ../ie-methods-qt/mainwindow.h ../ie-methods-qt/approximation.h ../ie-methods-qt/iterationmethodpositive.h ../ie-methods-qt/ietypes.h ../ie-methods-qt/iterationmethoddirichletkernel.h ../ie-methods-qt/mathextensions.h ../ie-methods-qt/iterationmethodcommon.h .tmp/ie-methods-qt1.0.0/ && $(COPY_FILE) --parents ../ie-methods-qt/main.cpp ../ie-methods-qt/mainwindow.cpp ../ie-methods-qt/iterationmethodpositive.cpp ../ie-methods-qt/iterationmethoddirichletkernel.cpp ../ie-methods-qt/iterationmethodcommon.cpp ../ie-methods-qt/mathextensions.cpp .tmp/ie-methods-qt1.0.0/ && $(COPY_FILE) --parents ../ie-methods-qt/mainwindow.ui .tmp/ie-methods-qt1.0.0/ && (cd `dirname .tmp/ie-methods-qt1.0.0` && $(TAR) ie-methods-qt1.0.0.tar ie-methods-qt1.0.0 && $(COMPRESS) ie-methods-qt1.0.0.tar) && $(MOVE) `dirname .tmp/ie-methods-qt1.0.0`/ie-methods-qt1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/ie-methods-qt1.0.0
 
 
 clean:compiler_clean 
@@ -564,7 +572,9 @@ main.o: ../ie-methods-qt/main.cpp ../ie-methods-qt/mainwindow.h \
 		../ie-methods-qt/approximation.h \
 		../ie-methods-qt/ietypes.h \
 		../ie-methods-qt/iterationmethodpositive.h \
-		../ie-methods-qt/iterationmethodnegative.h
+		../ie-methods-qt/iterationmethodcommon.h \
+		../ie-methods-qt/iterationmethoddirichletkernel.h \
+		../ie-methods-qt/mathextensions.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../ie-methods-qt/main.cpp
 
 mainwindow.o: ../ie-methods-qt/mainwindow.cpp ../ie-methods-qt/mainwindow.h \
@@ -721,6 +731,27 @@ mainwindow.o: ../ie-methods-qt/mainwindow.cpp ../ie-methods-qt/mainwindow.h \
 		../ie-methods-qt/approximation.h \
 		../ie-methods-qt/ietypes.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../ie-methods-qt/mainwindow.cpp
+
+iterationmethodpositive.o: ../ie-methods-qt/iterationmethodpositive.cpp ../ie-methods-qt/iterationmethodpositive.h \
+		../ie-methods-qt/approximation.h \
+		../ie-methods-qt/ietypes.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o iterationmethodpositive.o ../ie-methods-qt/iterationmethodpositive.cpp
+
+iterationmethoddirichletkernel.o: ../ie-methods-qt/iterationmethoddirichletkernel.cpp ../ie-methods-qt/iterationmethoddirichletkernel.h \
+		../ie-methods-qt/mathextensions.h \
+		../ie-methods-qt/ietypes.h \
+		../ie-methods-qt/iterationmethodpositive.h \
+		../ie-methods-qt/approximation.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o iterationmethoddirichletkernel.o ../ie-methods-qt/iterationmethoddirichletkernel.cpp
+
+iterationmethodcommon.o: ../ie-methods-qt/iterationmethodcommon.cpp ../ie-methods-qt/iterationmethodcommon.h \
+		../ie-methods-qt/iterationmethodpositive.h \
+		../ie-methods-qt/approximation.h \
+		../ie-methods-qt/ietypes.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o iterationmethodcommon.o ../ie-methods-qt/iterationmethodcommon.cpp
+
+mathextensions.o: ../ie-methods-qt/mathextensions.cpp ../ie-methods-qt/mathextensions.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mathextensions.o ../ie-methods-qt/mathextensions.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp
