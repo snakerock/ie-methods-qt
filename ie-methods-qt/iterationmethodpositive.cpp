@@ -1,56 +1,58 @@
 #include "iterationmethodpositive.h"
 
-IterationMethodPositive::IterationMethodPositive(
-        c_fx_ptr rightPart,
-        c_fxy_ptr kernel,
-        Complex lowerBound,
-        Complex upperBound,
-        Complex step
+
+IterationMethodPositive::IterationMethodPositive (
+        fx_t rightPart,
+        fxy_t kernel,
+        double lowerBound,
+        double upperBound,
+        int partsNumber
         ) :
-    f (rightPart),
-    K (kernel),
+    fPointer (rightPart),
+    kernelPointer (kernel),
     a (lowerBound),
     b (upperBound),
-    dx (step)
+    partsNumber (partsNumber),
+    dx ((b - a) / (double) partsNumber)
+{
+    Reinitialize();
+}
+
+IterationMethodPositive::IterationMethodPositive (
+        double lowerBound,
+        double upperBound,
+        int partsNumber
+        ) :
+    a (lowerBound),
+    b (upperBound),
+    partsNumber (partsNumber),
+    dx ((b - a) / (double) partsNumber)
 {
     Reinitialize();
 }
 
 IterationMethodPositive::~IterationMethodPositive()
-{
-}
+{ }
 
-void IterationMethodPositive::Reinitialize()
+void IterationMethodPositive::Reinitialize ()
 {
-    c_fx_ptr zero = [] (Complex) { return 0.0; };
+    fx_t zero = [] (double) { return 0.0; };
     curU = Approximation(zero);
 }
 
-Complex IterationMethodPositive::integrate(Approximation app) const
-{
-    Complex result = 0;
-
-    for (Complex x = a + dx * 0.5; x < b; x += dx){
-        result += app(x);
-    }
-    result *= dx;
-
-    return result;
-}
-
-std::function<Complex (Complex)> IterationMethodPositive::Iterate(int n)
+fx_t IterationMethodPositive::Iterate (int n)
 {
     for (int m = 0; m < n; ++m) {
         prevU = curU;
 
         curU = Approximation();
-        for (Complex x = a + dx * 0.5; x < b; x += dx) {
+        for (double x = a + dx * 0.5; x < b; x += dx) {
 
-            c_fx_ptr Kx = [this, x] (Complex y) { return K(x, y); };
-            Complex D = integrate(Kx);
+            fx_t Kx = [this, x] (double y) { return K(x, y); };
+            double D = integrate(Kx);
 
-            c_fx_ptr Kux = [this, x] (Complex y) { return K(x, y) * prevU(y); };
-            Complex IKux = integrate(Kux);
+            fx_t Kux = [this, x] (double y) { return K(x, y) * prevU(y); };
+            double IKux = integrate(Kux);
 
             curU.addXY(x, prevU(x) + (f(x) - IKux) / D);
         }
@@ -59,7 +61,75 @@ std::function<Complex (Complex)> IterationMethodPositive::Iterate(int n)
     return curU;
 }
 
-c_fx_ptr IterationMethodPositive::GetCurrentApproximation() const
+fx_t IterationMethodPositive::GetCurrentApproximation () const
 {
     return curU;
+}
+
+fx_t IterationMethodPositive::GetPreviousApproximation () const
+{
+    return prevU;
+}
+
+
+double IterationMethodPositive::f(double x) const
+{
+    return fPointer(x);
+}
+
+double IterationMethodPositive::K(double x, double y) const
+{
+    return kernelPointer(x, y);
+}
+
+double IterationMethodPositive::integrate(Approximation app) const
+{
+    double result = 0;
+
+    for (double x = a + dx * 0.5; x < b; x += dx){
+        result += app(x);
+    }
+    result *= dx;
+
+    return result;
+}
+
+double IterationMethodPositive::getDifference(fx_t a, fx_t b)
+{
+    double d = 0;
+    for (double x = this->dx * 0.5; x <= 1.0; x += this->dx) {
+        double t = std::abs(a(x) - b(x));
+        d += t * t;
+    }
+    return std::sqrt(d);
+}
+
+fx_t IterationMethodPositive::getFPointer() const
+{
+    return fPointer;
+}
+
+fxy_t IterationMethodPositive::getKernelPointer() const
+{
+    return kernelPointer;
+}
+
+double IterationMethodPositive::getB() const
+{
+    return b;
+}
+
+double IterationMethodPositive::getA() const
+{
+    return a;
+}
+
+int IterationMethodPositive::getPartsNumber() const
+{
+    return partsNumber;
+}
+
+double IterationMethodPositive::getDx() const
+{
+    return dx;
 }

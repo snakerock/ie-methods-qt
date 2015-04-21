@@ -4,7 +4,8 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT += core gui
+QT += xml
 
 CONFIG += c++11
 
@@ -16,16 +17,27 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    approximation.cpp \
-    iterationmethodnegative.cpp \
     iterationmethodpositive.cpp \
-    complex.cpp
+    qcustomplot.cpp \
+    qwt_mml_document.cpp \
+    qwt_mml_entity_table.cpp \
+    formulaview.cpp \
+    iterationmethodcommon.cpp \
+    iterationmethoddirichletkernel.cpp \
+    mathextensions.cpp \
+    mathfunctions.cpp
 
 HEADERS  += mainwindow.h \
     approximation.h \
-    iterationmethodnegative.h \
     iterationmethodpositive.h \
-    complex.h \
-    ietypes.h
+    ietypes.h \
+    qcustomplot.h \
+    qwt_mml_document.h \
+    qwt_mml_entity_table.h \
+    formulaview.h \
+    iterationmethodcommon.h \
+    iterationmethoddirichletkernel.h \
+    mathextensions.h \
+    mathfunctions.h
 
 FORMS    += mainwindow.ui

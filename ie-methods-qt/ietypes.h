@@ -2,12 +2,11 @@
 #define IETYPES_H
 
 #include <functional>
+#include <complex>
 
-class Complex;
-
-typedef std::function<Complex (Complex)> c_fx_ptr;
-typedef std::function<Complex (Complex, Complex)> c_fxy_ptr;
-typedef std::function<double (double)> r_fx_ptr;
-typedef std::function<double (double, double)> r_fxy_ptr;
+using Complex = std::complex<double>;
+using complex_fx_t = std::function<Complex (double)>;
+using fx_t = std::function<double (double)>;
+using fxy_t = std::function<double (double, double)>;
 
 #endif // IETYPES_H

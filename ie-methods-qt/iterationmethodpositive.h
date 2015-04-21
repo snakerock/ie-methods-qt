@@ -5,7 +5,6 @@
 #include <vector>
 
 #include "approximation.h"
-#include "complex.h"
 #include "ietypes.h"
 
 class IterationMethodPositive
@@ -21,17 +20,23 @@ protected:
      * where K(x, y) is POSITIVE definite kernel
      */
 
-    // Right part
-    c_fx_ptr f;
+    // Right part pointer
+    fx_t fPointer;
 
-    // Kernel
-    c_fxy_ptr K;
+    // Right part function for concrete right part inherited methods
+    virtual double f(double x) const;
+
+    // Kernel function pointer
+    fxy_t kernelPointer;
+
+    // Kernel function for concrete kernel inherited methods
+    virtual double K(double x, double y) const;
 
     // Lower bound
-    Complex a;
+    double a;
 
     // Upper bound
-    Complex b;
+    double b;
 
     /*
      * METHOD PARAMETERS
@@ -40,13 +45,16 @@ protected:
      *
      *                       (f(x) - (integral from a to b) K(x,y) * u[n-1](y) * dy)
      * u[n](x) = u[n-1](x) + -------------------------------------------------------,
-     *                                                 D(y)
-     * D(y) = (integral from a to b) K(x,y) * dy,
+     *                                                 D(x)
+     * D(x) = (integral from a to b) K(x,y) * dy,
      * u[0](x) = 0;
      */
 
+    // Partition of [a, b]
+    int partsNumber;
+
     // Integration step
-    Complex dx;
+    double dx;
 
     // u[n], current approximation
     Approximation curU;
@@ -55,15 +63,21 @@ protected:
     Approximation prevU;
 
     // Rectangle integration from a to b
-    Complex integrate(Approximation app) const;
+    double integrate(Approximation app) const;
+
+    IterationMethodPositive (
+            double lowerBound = 0.0,
+            double upperBound = 1.0,
+            int partsNumber = 1e+3
+            );
 
 public:
     IterationMethodPositive (
-            c_fx_ptr rightPart,
-            c_fxy_ptr kernel,
-            Complex lowerBound = 0.0,
-            Complex upperBound = 1.0,
-            Complex step = 10e-3
+            fx_t rightPart,
+            fxy_t kernel,
+            double lowerBound = 0.0,
+            double upperBound = 1.0,
+            int partsNumber = 1e+3
             );
 
     ~IterationMethodPositive();
@@ -72,10 +86,25 @@ public:
     virtual void Reinitialize ();
 
     // Iterate n steps next, preserving computed state between calls
-    virtual c_fx_ptr Iterate (int n = 1);
+    virtual fx_t Iterate (int n = 1);
 
     // Get curU as function pointer
-    virtual c_fx_ptr GetCurrentApproximation () const;
+    virtual fx_t GetCurrentApproximation () const;
+
+    // Get prevU as function pointer
+    virtual fx_t GetPreviousApproximation () const;
+
+    // Get Euclid norm || a(x) - b(x) ||
+    double getDifference(fx_t a, fx_t b);
+
+    fx_t getFPointer() const;
+
+    fxy_t getKernelPointer() const;
+
+    double getA() const;
+    double getB() const;
+    double getDx() const;
+    int getPartsNumber() const;
 };
 
 #endif // ITERATIONMETHODPOSITIVE_H
