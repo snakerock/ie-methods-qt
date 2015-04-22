@@ -128,7 +128,7 @@
            <widget class="QComboBox" name="expectedSolution">
             <item>
              <property name="text">
-              <string>1</string>
+              <string>exp(x)</string>
              </property>
             </item>
             <item>
@@ -138,7 +138,7 @@
             </item>
             <item>
              <property name="text">
-              <string>exp(x)</string>
+              <string>1</string>
              </property>
             </item>
            </widget>
@@ -303,7 +303,11 @@
             </widget>
            </item>
            <item row="0" column="1">
-            <widget class="QSpinBox" name="iterationsInOneStep"/>
+            <widget class="QSpinBox" name="iterationsInOneStep">
+             <property name="value">
+              <number>1</number>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -524,10 +528,27 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btnStartSolving</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onActionStart()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>156</x>
+     <y>552</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>574</x>
+     <y>359</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onActionCalculate()</slot>
   <slot>onActionPrevIteration()</slot>
   <slot>onActionNextIteration()</slot>
+  <slot>onActionStart()</slot>
  </slots>
 </ui>

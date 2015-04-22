@@ -46,7 +46,7 @@ private slots:
     void onActionCalculate();
     void onActionPrevStep();
     void onActionNextIteration();
-    void onStartMethod();
+    void onActionStart();
 };
 
 #endif // MAINWINDOW_H

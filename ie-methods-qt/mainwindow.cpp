@@ -65,7 +65,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->plotWidget->graph(2)->setPen(QPen(Qt::PenStyle::DashLine));
 
     makeGuiMathFunctionsAssociations();
-    onStartMethod();
+    onActionStart();
 }
 
 
@@ -175,11 +175,12 @@ void MainWindow::onActionNextIteration()
 }
 
 
-void MainWindow::onStartMethod()
+void MainWindow::onActionStart()
 {
     kernel = kernels[ui->kernelType->currentIndex()];
     solution = solutions[ui->expectedSolution->currentIndex()];
     rightPart = rightParts[std::make_pair(ui->kernelType->currentIndex(), ui->expectedSolution->currentIndex())];
+
 
     if (solver != nullptr) delete solver;
     solver = new IterationMethodPositive(rightPart, kernel,
@@ -187,5 +188,9 @@ void MainWindow::onStartMethod()
 
     setGraphBoundsTo(solution);
     plot(1, solution);
+    plot(0, [](double) { return 0; });
+    plot(2, [](double) { return 0; });
+
+    ui->plotWidget->repaint();
 }
 

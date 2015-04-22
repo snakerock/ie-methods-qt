@@ -63,6 +63,8 @@ public:
                         if (x < it->first) {
                             break;
                         }
+
+                        nearest = it->first;
                     }
                 }
 
