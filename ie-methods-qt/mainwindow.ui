@@ -373,7 +373,7 @@
              <bool>false</bool>
             </property>
             <property name="text">
-             <string>TextLabel</string>
+             <string>red - exact solution; blue- current iteration; black dashed - previous iteration</string>
             </property>
             <property name="scaledContents">
              <bool>false</bool>
@@ -392,25 +392,6 @@
              </size>
             </property>
            </spacer>
-          </item>
-          <item>
-           <widget class="QProgressBar" name="progressBar">
-            <property name="minimumSize">
-             <size>
-              <width>40</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>250</width>
-              <height>20</height>
-             </size>
-            </property>
-            <property name="value">
-             <number>24</number>
-            </property>
-           </widget>
           </item>
          </layout>
         </widget>

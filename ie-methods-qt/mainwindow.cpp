@@ -10,6 +10,7 @@
 
 #include "approximation.h"
 #include "iterationmethodpositive.h"
+#include "iterationmethoddirichletkernel.h"
 #include "ietypes.h"
 
 #include "mathfunctions.h"
@@ -98,6 +99,7 @@ void MainWindow::makeGuiMathFunctionsAssociations()
 
     //solutions[0] = fx_t([](double) { return 1; });
     solutions[0] = fx_t(MathFunctions::Solutions::exponent);
+    solutions[1] = fx_t(MathFunctions::Solutions::identical);
 
     rightParts[std::make_pair(0, 0)] = fx_t(MathFunctions::RightParts::f_kernel_e_abs_x_y);
 }
@@ -177,14 +179,32 @@ void MainWindow::onActionNextIteration()
 
 void MainWindow::onActionStart()
 {
-    kernel = kernels[ui->kernelType->currentIndex()];
-    solution = solutions[ui->expectedSolution->currentIndex()];
-    rightPart = rightParts[std::make_pair(ui->kernelType->currentIndex(), ui->expectedSolution->currentIndex())];
-
-
     if (solver != nullptr) delete solver;
-    solver = new IterationMethodPositive(rightPart, kernel,
-                                         ui->lowerBoundInput->value(), ui->upperBoundInput->value(), ui->gridStepsInput->value());
+    solution = solutions[ui->expectedSolution->currentIndex()];
+
+    if (ui->kernelType->currentIndex() == 1) {
+        /* dirichlet kernel */
+
+        auto direchletRightPart = MathFunctions::RightParts::f_dirichlet_exp;
+        if (ui->expectedSolution->currentIndex() == 1) {
+            direchletRightPart = MathFunctions::RightParts::f_dirichlet_ident;
+        }
+
+        solver = new IterationMethodDirichletKernel(direchletRightPart,
+                                                    1.0, ui->upperBoundInput->value(),
+                                                    /*(ui->upperBoundInput->value() - ui->lowerBoundInput->value()) / */
+                                                    ui->gridStepsInput->value());
+    } else {
+
+        kernel = kernels[ui->kernelType->currentIndex()];
+        rightPart = rightParts[std::make_pair(ui->kernelType->currentIndex(), ui->expectedSolution->currentIndex())];
+
+
+
+        solver = new IterationMethodPositive(rightPart, kernel,
+                                             ui->lowerBoundInput->value(), ui->upperBoundInput->value(), ui->gridStepsInput->value());
+    }
+
 
     setGraphBoundsTo(solution);
     plot(1, solution);

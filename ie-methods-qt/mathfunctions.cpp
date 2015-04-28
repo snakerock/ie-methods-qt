@@ -23,9 +23,25 @@ double MathFunctions::RightParts::f_kernel_e_abs_x_y(double y)
 }
 
 
-double MathFunctions::Solutions::exponent(double x)
+double MathFunctions::Solutions::exponent(double y)
 {
-    return exp(x);
+    return exp(y);
 }
 
 
+double MathFunctions::Solutions::identical(double y)
+{
+    return y;
+}
+
+
+Complex MathFunctions::RightParts::f_dirichlet_exp(double y)
+{
+    return -Complex(0.0, 1.0) * (-1.0 + std::exp(1.0 + Complex(0.0, 1.0) * y)) / (y - Complex(0.0, 1.0));
+}
+
+
+Complex MathFunctions::RightParts::f_dirichlet_ident(double y)
+{
+    return (-1.0 + std::exp(Complex(0.0, 1.0) * y) * (1.0 - Complex(0.0, 1.0) * y)) / (y * y);
+}
