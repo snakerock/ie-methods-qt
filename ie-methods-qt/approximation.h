@@ -6,6 +6,7 @@
 #include <vector>
 #include <cmath>
 #include <map>
+#include <unordered_map>
 #include <array>
 
 #include "ietypes.h"

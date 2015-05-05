@@ -24,6 +24,7 @@ public:
 private:
     Ui::MainWindow *ui;
     IterationMethodPositive *solver = nullptr;
+    int iterationCount = 0;
 
 private:
     fx_t rightPart;
@@ -39,6 +40,7 @@ private:
     void plot(int graphId, const QVector<double>& x, const QVector<double>& y);
     void plot(int graphId, fx_t func);
     void setGraphBoundsTo(fx_t func);
+    void updateStatusBar();
 
     void makeGuiMathFunctionsAssociations();
 
@@ -47,6 +49,7 @@ private slots:
     void onActionPrevStep();
     void onActionNextIteration();
     void onActionStart();
+    void onActionSaveGraph();
 };
 
 #endif // MAINWINDOW_H

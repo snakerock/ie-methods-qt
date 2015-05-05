@@ -4,6 +4,8 @@
 
 #include <QDebug>
 #include <QVector>
+#include <QFileDialog>
+
 #include <iostream>
 #include <functional>
 #include <algorithm>
@@ -93,6 +95,13 @@ void MainWindow::setGraphBoundsTo(fx_t func)
 }
 
 
+void MainWindow::updateStatusBar()
+{
+    ui->label_Status->setText(QString("Iteration: %1    Error: %2").arg(iterationCount).arg(
+                            solver->getDifference(solution, solver->GetCurrentApproximation())));
+}
+
+
 void MainWindow::makeGuiMathFunctionsAssociations()
 {
     kernels[0]    = MathFunctions::Kernels::e_abs_x_y;
@@ -174,11 +183,14 @@ void MainWindow::onActionNextIteration()
     plot(2, prevU);
 
     ui->plotWidget->replot();
+    iterationCount += ui->iterationsInOneStep->value();
+    updateStatusBar();
 }
 
 
 void MainWindow::onActionStart()
 {
+    iterationCount = 0;
     if (solver != nullptr) delete solver;
     solution = solutions[ui->expectedSolution->currentIndex()];
 
@@ -212,5 +224,14 @@ void MainWindow::onActionStart()
     plot(2, [](double) { return 0; });
 
     ui->plotWidget->repaint();
+}
+
+
+void MainWindow::onActionSaveGraph()
+{
+    auto fileName = QFileDialog::getSaveFileName(this,
+        tr("Save Image"), QString("graph-%1.png").arg(iterationCount), tr("Image Files (*.png)"));
+
+    ui->plotWidget->savePng(fileName);
 }
 
