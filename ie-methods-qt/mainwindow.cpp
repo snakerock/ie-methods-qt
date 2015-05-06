@@ -57,7 +57,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->lowerBoundInput->setValue(0);
     ui->upperBoundInput->setValue(1);
-    ui->gridStepsInput->setValue(1000);
+    ui->gridStepsInput->setValue(100);
+
+    ui->input_RightPartError->setValue(0);
 
     ui->plotWidget->addGraph();
     ui->plotWidget->addGraph();
@@ -98,7 +100,24 @@ void MainWindow::setGraphBoundsTo(fx_t func)
 void MainWindow::updateStatusBar()
 {
     ui->label_Status->setText(QString("Iteration: %1    Error: %2").arg(iterationCount).arg(
-                            solver->getDifference(solution, solver->GetCurrentApproximation())));
+                                  solver->getDifference(solution, solver->GetCurrentApproximation())));
+}
+
+
+void MainWindow::makeRightPartNoise()
+{
+    if (ui->input_RightPartError->value() == 0) return;
+
+    Approximation newRightPart;
+
+    double step = solver->getDx();
+    for (double x = solver->getA(); x <= solver->getB(); x += step) {
+        double error = ((double(rand() % 100)) / 100.0) * (ui->input_RightPartError->value() / 100.0);
+        if (rand() % 2) error = -error;
+        newRightPart.addXY(x, rightPart(x) * (error + 1.0));
+    }
+
+    rightPart = newRightPart;
 }
 
 
@@ -109,8 +128,12 @@ void MainWindow::makeGuiMathFunctionsAssociations()
     //solutions[0] = fx_t([](double) { return 1; });
     solutions[0] = fx_t(MathFunctions::Solutions::exponent);
     solutions[1] = fx_t(MathFunctions::Solutions::identical);
+    solutions[2] = fx_t(MathFunctions::Solutions::cosinus_pi);
+    solutions[3] = fx_t(MathFunctions::Solutions::sinus_2pi);
 
-    rightParts[std::make_pair(0, 0)] = fx_t(MathFunctions::RightParts::f_kernel_e_abs_x_y);
+    rightParts[std::make_pair(0, 2)] = fx_t(MathFunctions::RightParts::f_kernel_e_abs_x_y_cos_pi);
+    rightParts[std::make_pair(0, 3)] = fx_t(MathFunctions::RightParts::f_kernel_e_abs_x_y_sin_2pi);
+    rightParts[std::make_pair(0, 0)] = fx_t(MathFunctions::RightParts::f_kernel_e_abs_x_y_exp);
 }
 
 
@@ -138,7 +161,7 @@ void MainWindow::plot(int graphId, fx_t func)
 
 void MainWindow::onActionCalculate()
 {
-    IterationMethodPositive im(MathFunctions::RightParts::f_kernel_e_abs_x_y, MathFunctions::Kernels::e_abs_x_y);
+    IterationMethodPositive im(MathFunctions::RightParts::f_kernel_e_abs_x_y_exp, MathFunctions::Kernels::e_abs_x_y);
     fx_t prevU = im.Iterate();
     fx_t curU = im.Iterate();
     double prevDiff, curDiff, realDiff;
@@ -202,6 +225,7 @@ void MainWindow::onActionStart()
             direchletRightPart = MathFunctions::RightParts::f_dirichlet_ident;
         }
 
+        makeRightPartNoise();
         solver = new IterationMethodDirichletKernel(direchletRightPart,
                                                     1.0, ui->upperBoundInput->value(),
                                                     /*(ui->upperBoundInput->value() - ui->lowerBoundInput->value()) / */
@@ -211,8 +235,7 @@ void MainWindow::onActionStart()
         kernel = kernels[ui->kernelType->currentIndex()];
         rightPart = rightParts[std::make_pair(ui->kernelType->currentIndex(), ui->expectedSolution->currentIndex())];
 
-
-
+        makeRightPartNoise();
         solver = new IterationMethodPositive(rightPart, kernel,
                                              ui->lowerBoundInput->value(), ui->upperBoundInput->value(), ui->gridStepsInput->value());
     }

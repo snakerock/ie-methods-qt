@@ -41,6 +41,7 @@ private:
     void plot(int graphId, fx_t func);
     void setGraphBoundsTo(fx_t func);
     void updateStatusBar();
+    void makeRightPartNoise();
 
     void makeGuiMathFunctionsAssociations();
 

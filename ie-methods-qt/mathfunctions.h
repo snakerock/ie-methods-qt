@@ -14,7 +14,10 @@ namespace MathFunctions
 
     namespace RightParts
     {
-        double f_kernel_e_abs_x_y(double x);
+        double f_kernel_e_abs_x_y_exp(double x);
+        double f_kernel_e_abs_x_y_cos_pi(double x);
+        double f_kernel_e_abs_x_y_sin_2pi(double x);
+
         Complex f_dirichlet_exp(double y);
         Complex f_dirichlet_ident(double y);
     }
@@ -24,6 +27,8 @@ namespace MathFunctions
     {
         double exponent(double y);
         double identical(double y);
+        double cosinus_pi(double y);
+        double sinus_2pi(double y);
     }
 }
 
