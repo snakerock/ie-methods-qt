@@ -10,7 +10,7 @@
 #include "iterationmethodpositive.h"
 #include "ietypes.h"
 
-void test_e_ixy()
+int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     MainWindow w;

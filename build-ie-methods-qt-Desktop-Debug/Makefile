@@ -12,13 +12,13 @@ MAKEFILE      = Makefile
 
 CC            = gcc
 CXX           = g++
-DEFINES       = -DQT_QML_DEBUG -DQT_DECLARATIVE_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
+DEFINES       = -DQT_QML_DEBUG -DQT_DECLARATIVE_DEBUG -DQT_WIDGETS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -m64 -pipe -g -Wall -W -D_REENTRANT -fPIE $(DEFINES)
 CXXFLAGS      = -m64 -pipe -g -std=c++0x -Wall -W -D_REENTRANT -fPIE $(DEFINES)
-INCPATH       = -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I../ie-methods-qt -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtCore -I. -I. -I.
+INCPATH       = -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I../ie-methods-qt -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtXml -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtCore -I. -I. -I.
 LINK          = g++
 LFLAGS        = -m64
-LIBS          = $(SUBLIBS) -L/usr/X11R6/lib64 -lQt5Widgets -L/usr/lib/x86_64-linux-gnu -lQt5Gui -lQt5Core -lGL -lpthread 
+LIBS          = $(SUBLIBS) -L/usr/X11R6/lib64 -lQt5Widgets -L/usr/lib/x86_64-linux-gnu -lQt5Xml -lQt5Gui -lQt5Core -lGL -lpthread 
 AR            = ar cqs
 RANLIB        = 
 QMAKE         = /usr/lib/x86_64-linux-gnu/qt5/bin/qmake
@@ -48,16 +48,30 @@ OBJECTS_DIR   = ./
 SOURCES       = ../ie-methods-qt/main.cpp \
 		../ie-methods-qt/mainwindow.cpp \
 		../ie-methods-qt/iterationmethodpositive.cpp \
-		../ie-methods-qt/iterationmethoddirichletkernel.cpp \
+		../ie-methods-qt/qcustomplot.cpp \
+		../ie-methods-qt/qwt_mml_document.cpp \
+		../ie-methods-qt/qwt_mml_entity_table.cpp \
+		../ie-methods-qt/formulaview.cpp \
 		../ie-methods-qt/iterationmethodcommon.cpp \
-		../ie-methods-qt/mathextensions.cpp moc_mainwindow.cpp
+		../ie-methods-qt/iterationmethoddirichletkernel.cpp \
+		../ie-methods-qt/mathextensions.cpp \
+		../ie-methods-qt/mathfunctions.cpp moc_mainwindow.cpp \
+		moc_qcustomplot.cpp \
+		moc_formulaview.cpp
 OBJECTS       = main.o \
 		mainwindow.o \
 		iterationmethodpositive.o \
-		iterationmethoddirichletkernel.o \
+		qcustomplot.o \
+		qwt_mml_document.o \
+		qwt_mml_entity_table.o \
+		formulaview.o \
 		iterationmethodcommon.o \
+		iterationmethoddirichletkernel.o \
 		mathextensions.o \
-		moc_mainwindow.o
+		mathfunctions.o \
+		moc_mainwindow.o \
+		moc_qcustomplot.o \
+		moc_formulaview.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/shell-unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
@@ -218,7 +232,8 @@ Makefile: ../ie-methods-qt/ie-methods-qt.pro /usr/lib/x86_64-linux-gnu/qt5/mkspe
 		../ie-methods-qt/ie-methods-qt.pro \
 		/usr/lib/x86_64-linux-gnu/libQt5Widgets.prl \
 		/usr/lib/x86_64-linux-gnu/libQt5Gui.prl \
-		/usr/lib/x86_64-linux-gnu/libQt5Core.prl
+		/usr/lib/x86_64-linux-gnu/libQt5Core.prl \
+		/usr/lib/x86_64-linux-gnu/libQt5Xml.prl
 	$(QMAKE) -spec linux-g++-64 CONFIG+=debug CONFIG+=declarative_debug CONFIG+=qml_debug -o Makefile ../ie-methods-qt/ie-methods-qt.pro
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/shell-unix.conf:
@@ -285,6 +300,7 @@ Makefile: ../ie-methods-qt/ie-methods-qt.pro /usr/lib/x86_64-linux-gnu/qt5/mkspe
 /usr/lib/x86_64-linux-gnu/libQt5Widgets.prl:
 /usr/lib/x86_64-linux-gnu/libQt5Gui.prl:
 /usr/lib/x86_64-linux-gnu/libQt5Core.prl:
+/usr/lib/x86_64-linux-gnu/libQt5Xml.prl:
 qmake: FORCE
 	@$(QMAKE) -spec linux-g++-64 CONFIG+=debug CONFIG+=declarative_debug CONFIG+=qml_debug -o Makefile ../ie-methods-qt/ie-methods-qt.pro
 
@@ -292,7 +308,7 @@ qmake_all: FORCE
 
 dist: 
 	@test -d .tmp/ie-methods-qt1.0.0 || mkdir -p .tmp/ie-methods-qt1.0.0
-	$(COPY_FILE) --parents $(SOURCES) $(DIST) .tmp/ie-methods-qt1.0.0/ && $(COPY_FILE) --parents ../ie-methods-qt/mainwindow.h ../ie-methods-qt/approximation.h ../ie-methods-qt/iterationmethodpositive.h ../ie-methods-qt/ietypes.h ../ie-methods-qt/iterationmethoddirichletkernel.h ../ie-methods-qt/mathextensions.h ../ie-methods-qt/iterationmethodcommon.h .tmp/ie-methods-qt1.0.0/ && $(COPY_FILE) --parents ../ie-methods-qt/main.cpp ../ie-methods-qt/mainwindow.cpp ../ie-methods-qt/iterationmethodpositive.cpp ../ie-methods-qt/iterationmethoddirichletkernel.cpp ../ie-methods-qt/iterationmethodcommon.cpp ../ie-methods-qt/mathextensions.cpp .tmp/ie-methods-qt1.0.0/ && $(COPY_FILE) --parents ../ie-methods-qt/mainwindow.ui .tmp/ie-methods-qt1.0.0/ && (cd `dirname .tmp/ie-methods-qt1.0.0` && $(TAR) ie-methods-qt1.0.0.tar ie-methods-qt1.0.0 && $(COMPRESS) ie-methods-qt1.0.0.tar) && $(MOVE) `dirname .tmp/ie-methods-qt1.0.0`/ie-methods-qt1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/ie-methods-qt1.0.0
+	$(COPY_FILE) --parents $(SOURCES) $(DIST) .tmp/ie-methods-qt1.0.0/ && $(COPY_FILE) --parents ../ie-methods-qt/mainwindow.h ../ie-methods-qt/approximation.h ../ie-methods-qt/iterationmethodpositive.h ../ie-methods-qt/ietypes.h ../ie-methods-qt/qcustomplot.h ../ie-methods-qt/qwt_mml_document.h ../ie-methods-qt/qwt_mml_entity_table.h ../ie-methods-qt/formulaview.h ../ie-methods-qt/iterationmethodcommon.h ../ie-methods-qt/iterationmethoddirichletkernel.h ../ie-methods-qt/mathextensions.h ../ie-methods-qt/mathfunctions.h .tmp/ie-methods-qt1.0.0/ && $(COPY_FILE) --parents ../ie-methods-qt/main.cpp ../ie-methods-qt/mainwindow.cpp ../ie-methods-qt/iterationmethodpositive.cpp ../ie-methods-qt/qcustomplot.cpp ../ie-methods-qt/qwt_mml_document.cpp ../ie-methods-qt/qwt_mml_entity_table.cpp ../ie-methods-qt/formulaview.cpp ../ie-methods-qt/iterationmethodcommon.cpp ../ie-methods-qt/iterationmethoddirichletkernel.cpp ../ie-methods-qt/mathextensions.cpp ../ie-methods-qt/mathfunctions.cpp .tmp/ie-methods-qt1.0.0/ && $(COPY_FILE) --parents ../ie-methods-qt/mainwindow.ui .tmp/ie-methods-qt1.0.0/ && (cd `dirname .tmp/ie-methods-qt1.0.0` && $(TAR) ie-methods-qt1.0.0.tar ie-methods-qt1.0.0 && $(COMPRESS) ie-methods-qt1.0.0.tar) && $(MOVE) `dirname .tmp/ie-methods-qt1.0.0`/ie-methods-qt1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/ie-methods-qt1.0.0
 
 
 clean:compiler_clean 
@@ -315,9 +331,9 @@ check: first
 
 compiler_rcc_make_all:
 compiler_rcc_clean:
-compiler_moc_header_make_all: moc_mainwindow.cpp
+compiler_moc_header_make_all: moc_mainwindow.cpp moc_qcustomplot.cpp moc_formulaview.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_mainwindow.cpp
+	-$(DEL_FILE) moc_mainwindow.cpp moc_qcustomplot.cpp moc_formulaview.cpp
 moc_mainwindow.cpp: /usr/include/qt5/QtWidgets/QMainWindow \
 		/usr/include/qt5/QtWidgets/qmainwindow.h \
 		/usr/include/qt5/QtWidgets/qwidget.h \
@@ -429,15 +445,509 @@ moc_mainwindow.cpp: /usr/include/qt5/QtWidgets/QMainWindow \
 		/usr/include/qt5/QtGui/qtouchdevice.h \
 		/usr/include/qt5/QtWidgets/qtabwidget.h \
 		/usr/include/qt5/QtGui/qicon.h \
+		../ie-methods-qt/iterationmethodcommon.h \
+		../ie-methods-qt/iterationmethodpositive.h \
+		../ie-methods-qt/approximation.h \
+		../ie-methods-qt/ietypes.h \
 		../ie-methods-qt/mainwindow.h
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) $(INCPATH) -I/usr/include/c++/4.8 -I/usr/include/x86_64-linux-gnu/c++/4.8 -I/usr/include/c++/4.8/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../ie-methods-qt/mainwindow.h -o moc_mainwindow.cpp
+
+moc_qcustomplot.cpp: /usr/include/qt5/QtCore/QObject \
+		/usr/include/qt5/QtCore/qobject.h \
+		/usr/include/qt5/QtCore/qobjectdefs.h \
+		/usr/include/qt5/QtCore/qnamespace.h \
+		/usr/include/qt5/QtCore/qglobal.h \
+		/usr/include/qt5/QtCore/qconfig.h \
+		/usr/include/qt5/QtCore/qfeatures.h \
+		/usr/include/qt5/QtCore/qsystemdetection.h \
+		/usr/include/qt5/QtCore/qprocessordetection.h \
+		/usr/include/qt5/QtCore/qcompilerdetection.h \
+		/usr/include/qt5/QtCore/qglobalstatic.h \
+		/usr/include/qt5/QtCore/qatomic.h \
+		/usr/include/qt5/QtCore/qbasicatomic.h \
+		/usr/include/qt5/QtCore/qatomic_bootstrap.h \
+		/usr/include/qt5/QtCore/qgenericatomic.h \
+		/usr/include/qt5/QtCore/qatomic_msvc.h \
+		/usr/include/qt5/QtCore/qatomic_integrity.h \
+		/usr/include/qt5/QtCore/qoldbasicatomic.h \
+		/usr/include/qt5/QtCore/qatomic_vxworks.h \
+		/usr/include/qt5/QtCore/qatomic_power.h \
+		/usr/include/qt5/QtCore/qatomic_alpha.h \
+		/usr/include/qt5/QtCore/qatomic_armv7.h \
+		/usr/include/qt5/QtCore/qatomic_armv6.h \
+		/usr/include/qt5/QtCore/qatomic_armv5.h \
+		/usr/include/qt5/QtCore/qatomic_bfin.h \
+		/usr/include/qt5/QtCore/qatomic_ia64.h \
+		/usr/include/qt5/QtCore/qatomic_mips.h \
+		/usr/include/qt5/QtCore/qatomic_s390.h \
+		/usr/include/qt5/QtCore/qatomic_sh4a.h \
+		/usr/include/qt5/QtCore/qatomic_sparc.h \
+		/usr/include/qt5/QtCore/qatomic_gcc.h \
+		/usr/include/qt5/QtCore/qatomic_x86.h \
+		/usr/include/qt5/QtCore/qatomic_cxx11.h \
+		/usr/include/qt5/QtCore/qatomic_unix.h \
+		/usr/include/qt5/QtCore/qmutex.h \
+		/usr/include/qt5/QtCore/qlogging.h \
+		/usr/include/qt5/QtCore/qflags.h \
+		/usr/include/qt5/QtCore/qtypeinfo.h \
+		/usr/include/qt5/QtCore/qtypetraits.h \
+		/usr/include/qt5/QtCore/qsysinfo.h \
+		/usr/include/qt5/QtCore/qobjectdefs_impl.h \
+		/usr/include/qt5/QtCore/qstring.h \
+		/usr/include/qt5/QtCore/qchar.h \
+		/usr/include/qt5/QtCore/qbytearray.h \
+		/usr/include/qt5/QtCore/qrefcount.h \
+		/usr/include/qt5/QtCore/qarraydata.h \
+		/usr/include/qt5/QtCore/qstringbuilder.h \
+		/usr/include/qt5/QtCore/qlist.h \
+		/usr/include/qt5/QtCore/qalgorithms.h \
+		/usr/include/qt5/QtCore/qiterator.h \
+		/usr/include/qt5/QtCore/qcoreevent.h \
+		/usr/include/qt5/QtCore/qscopedpointer.h \
+		/usr/include/qt5/QtCore/qmetatype.h \
+		/usr/include/qt5/QtCore/qvarlengtharray.h \
+		/usr/include/qt5/QtCore/qcontainerfwd.h \
+		/usr/include/qt5/QtCore/qisenum.h \
+		/usr/include/qt5/QtCore/qobject_impl.h \
+		/usr/include/qt5/QtCore/QPointer \
+		/usr/include/qt5/QtCore/qpointer.h \
+		/usr/include/qt5/QtCore/qsharedpointer.h \
+		/usr/include/qt5/QtCore/qshareddata.h \
+		/usr/include/qt5/QtCore/qsharedpointer_impl.h \
+		/usr/include/qt5/QtCore/qhash.h \
+		/usr/include/qt5/QtCore/qpair.h \
+		/usr/include/qt5/QtWidgets/QWidget \
+		/usr/include/qt5/QtWidgets/qwidget.h \
+		/usr/include/qt5/QtGui/qwindowdefs.h \
+		/usr/include/qt5/QtGui/qwindowdefs_win.h \
+		/usr/include/qt5/QtCore/qmargins.h \
+		/usr/include/qt5/QtCore/qrect.h \
+		/usr/include/qt5/QtCore/qsize.h \
+		/usr/include/qt5/QtCore/qpoint.h \
+		/usr/include/qt5/QtGui/qpaintdevice.h \
+		/usr/include/qt5/QtGui/qpalette.h \
+		/usr/include/qt5/QtGui/qcolor.h \
+		/usr/include/qt5/QtGui/qrgb.h \
+		/usr/include/qt5/QtCore/qstringlist.h \
+		/usr/include/qt5/QtCore/qdatastream.h \
+		/usr/include/qt5/QtCore/qiodevice.h \
+		/usr/include/qt5/QtCore/qregexp.h \
+		/usr/include/qt5/QtCore/qstringmatcher.h \
+		/usr/include/qt5/QtGui/qbrush.h \
+		/usr/include/qt5/QtCore/qvector.h \
+		/usr/include/qt5/QtGui/qmatrix.h \
+		/usr/include/qt5/QtGui/qpolygon.h \
+		/usr/include/qt5/QtGui/qregion.h \
+		/usr/include/qt5/QtCore/qline.h \
+		/usr/include/qt5/QtGui/qtransform.h \
+		/usr/include/qt5/QtGui/qpainterpath.h \
+		/usr/include/qt5/QtGui/qimage.h \
+		/usr/include/qt5/QtGui/qpixmap.h \
+		/usr/include/qt5/QtGui/qfont.h \
+		/usr/include/qt5/QtGui/qfontmetrics.h \
+		/usr/include/qt5/QtGui/qfontinfo.h \
+		/usr/include/qt5/QtWidgets/qsizepolicy.h \
+		/usr/include/qt5/QtGui/qcursor.h \
+		/usr/include/qt5/QtGui/qkeysequence.h \
+		/usr/include/qt5/QtGui/qevent.h \
+		/usr/include/qt5/QtCore/qvariant.h \
+		/usr/include/qt5/QtCore/qmap.h \
+		/usr/include/qt5/QtCore/qdebug.h \
+		/usr/include/qt5/QtCore/qtextstream.h \
+		/usr/include/qt5/QtCore/qlocale.h \
+		/usr/include/qt5/QtCore/qset.h \
+		/usr/include/qt5/QtCore/qcontiguouscache.h \
+		/usr/include/qt5/QtCore/qurl.h \
+		/usr/include/qt5/QtCore/qurlquery.h \
+		/usr/include/qt5/QtCore/qfile.h \
+		/usr/include/qt5/QtCore/qfiledevice.h \
+		/usr/include/qt5/QtGui/qvector2d.h \
+		/usr/include/qt5/QtGui/qtouchdevice.h \
+		/usr/include/qt5/QtGui/QPainter \
+		/usr/include/qt5/QtGui/qpainter.h \
+		/usr/include/qt5/QtGui/qtextoption.h \
+		/usr/include/qt5/QtGui/qpen.h \
+		/usr/include/qt5/QtGui/QPaintEvent \
+		/usr/include/qt5/QtGui/QMouseEvent \
+		/usr/include/qt5/QtGui/QPixmap \
+		/usr/include/qt5/QtCore/QVector \
+		/usr/include/qt5/QtCore/QString \
+		/usr/include/qt5/QtCore/QDateTime \
+		/usr/include/qt5/QtCore/qdatetime.h \
+		/usr/include/qt5/QtCore/QMultiMap \
+		/usr/include/qt5/QtCore/QFlags \
+		/usr/include/qt5/QtCore/QDebug \
+		/usr/include/qt5/QtGui/QVector2D \
+		/usr/include/qt5/QtCore/QStack \
+		/usr/include/qt5/QtCore/qstack.h \
+		/usr/include/qt5/QtCore/QCache \
+		/usr/include/qt5/QtCore/qcache.h \
+		/usr/include/qt5/QtCore/QMargins \
+		/usr/include/qt5/QtCore/qmath.h \
+		/usr/include/qt5/QtCore/qnumeric.h \
+		/usr/include/qt5/QtCore/QtNumeric \
+		../ie-methods-qt/qcustomplot.h
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) $(INCPATH) -I/usr/include/c++/4.8 -I/usr/include/x86_64-linux-gnu/c++/4.8 -I/usr/include/c++/4.8/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../ie-methods-qt/qcustomplot.h -o moc_qcustomplot.cpp
+
+moc_formulaview.cpp: /usr/include/qt5/QtWidgets/qwidget.h \
+		/usr/include/qt5/QtGui/qwindowdefs.h \
+		/usr/include/qt5/QtCore/qglobal.h \
+		/usr/include/qt5/QtCore/qconfig.h \
+		/usr/include/qt5/QtCore/qfeatures.h \
+		/usr/include/qt5/QtCore/qsystemdetection.h \
+		/usr/include/qt5/QtCore/qprocessordetection.h \
+		/usr/include/qt5/QtCore/qcompilerdetection.h \
+		/usr/include/qt5/QtCore/qglobalstatic.h \
+		/usr/include/qt5/QtCore/qatomic.h \
+		/usr/include/qt5/QtCore/qbasicatomic.h \
+		/usr/include/qt5/QtCore/qatomic_bootstrap.h \
+		/usr/include/qt5/QtCore/qgenericatomic.h \
+		/usr/include/qt5/QtCore/qatomic_msvc.h \
+		/usr/include/qt5/QtCore/qatomic_integrity.h \
+		/usr/include/qt5/QtCore/qoldbasicatomic.h \
+		/usr/include/qt5/QtCore/qatomic_vxworks.h \
+		/usr/include/qt5/QtCore/qatomic_power.h \
+		/usr/include/qt5/QtCore/qatomic_alpha.h \
+		/usr/include/qt5/QtCore/qatomic_armv7.h \
+		/usr/include/qt5/QtCore/qatomic_armv6.h \
+		/usr/include/qt5/QtCore/qatomic_armv5.h \
+		/usr/include/qt5/QtCore/qatomic_bfin.h \
+		/usr/include/qt5/QtCore/qatomic_ia64.h \
+		/usr/include/qt5/QtCore/qatomic_mips.h \
+		/usr/include/qt5/QtCore/qatomic_s390.h \
+		/usr/include/qt5/QtCore/qatomic_sh4a.h \
+		/usr/include/qt5/QtCore/qatomic_sparc.h \
+		/usr/include/qt5/QtCore/qatomic_gcc.h \
+		/usr/include/qt5/QtCore/qatomic_x86.h \
+		/usr/include/qt5/QtCore/qatomic_cxx11.h \
+		/usr/include/qt5/QtCore/qatomic_unix.h \
+		/usr/include/qt5/QtCore/qmutex.h \
+		/usr/include/qt5/QtCore/qlogging.h \
+		/usr/include/qt5/QtCore/qflags.h \
+		/usr/include/qt5/QtCore/qtypeinfo.h \
+		/usr/include/qt5/QtCore/qtypetraits.h \
+		/usr/include/qt5/QtCore/qsysinfo.h \
+		/usr/include/qt5/QtCore/qobjectdefs.h \
+		/usr/include/qt5/QtCore/qnamespace.h \
+		/usr/include/qt5/QtCore/qobjectdefs_impl.h \
+		/usr/include/qt5/QtGui/qwindowdefs_win.h \
+		/usr/include/qt5/QtCore/qobject.h \
+		/usr/include/qt5/QtCore/qstring.h \
+		/usr/include/qt5/QtCore/qchar.h \
+		/usr/include/qt5/QtCore/qbytearray.h \
+		/usr/include/qt5/QtCore/qrefcount.h \
+		/usr/include/qt5/QtCore/qarraydata.h \
+		/usr/include/qt5/QtCore/qstringbuilder.h \
+		/usr/include/qt5/QtCore/qlist.h \
+		/usr/include/qt5/QtCore/qalgorithms.h \
+		/usr/include/qt5/QtCore/qiterator.h \
+		/usr/include/qt5/QtCore/qcoreevent.h \
+		/usr/include/qt5/QtCore/qscopedpointer.h \
+		/usr/include/qt5/QtCore/qmetatype.h \
+		/usr/include/qt5/QtCore/qvarlengtharray.h \
+		/usr/include/qt5/QtCore/qcontainerfwd.h \
+		/usr/include/qt5/QtCore/qisenum.h \
+		/usr/include/qt5/QtCore/qobject_impl.h \
+		/usr/include/qt5/QtCore/qmargins.h \
+		/usr/include/qt5/QtCore/qrect.h \
+		/usr/include/qt5/QtCore/qsize.h \
+		/usr/include/qt5/QtCore/qpoint.h \
+		/usr/include/qt5/QtGui/qpaintdevice.h \
+		/usr/include/qt5/QtGui/qpalette.h \
+		/usr/include/qt5/QtGui/qcolor.h \
+		/usr/include/qt5/QtGui/qrgb.h \
+		/usr/include/qt5/QtCore/qstringlist.h \
+		/usr/include/qt5/QtCore/qdatastream.h \
+		/usr/include/qt5/QtCore/qiodevice.h \
+		/usr/include/qt5/QtCore/qpair.h \
+		/usr/include/qt5/QtCore/qregexp.h \
+		/usr/include/qt5/QtCore/qstringmatcher.h \
+		/usr/include/qt5/QtGui/qbrush.h \
+		/usr/include/qt5/QtCore/qvector.h \
+		/usr/include/qt5/QtGui/qmatrix.h \
+		/usr/include/qt5/QtGui/qpolygon.h \
+		/usr/include/qt5/QtGui/qregion.h \
+		/usr/include/qt5/QtCore/qline.h \
+		/usr/include/qt5/QtGui/qtransform.h \
+		/usr/include/qt5/QtGui/qpainterpath.h \
+		/usr/include/qt5/QtGui/qimage.h \
+		/usr/include/qt5/QtGui/qpixmap.h \
+		/usr/include/qt5/QtCore/qsharedpointer.h \
+		/usr/include/qt5/QtCore/qshareddata.h \
+		/usr/include/qt5/QtCore/qsharedpointer_impl.h \
+		/usr/include/qt5/QtCore/qhash.h \
+		/usr/include/qt5/QtGui/qfont.h \
+		/usr/include/qt5/QtGui/qfontmetrics.h \
+		/usr/include/qt5/QtGui/qfontinfo.h \
+		/usr/include/qt5/QtWidgets/qsizepolicy.h \
+		/usr/include/qt5/QtGui/qcursor.h \
+		/usr/include/qt5/QtGui/qkeysequence.h \
+		/usr/include/qt5/QtGui/qevent.h \
+		/usr/include/qt5/QtCore/qvariant.h \
+		/usr/include/qt5/QtCore/qmap.h \
+		/usr/include/qt5/QtCore/qdebug.h \
+		/usr/include/qt5/QtCore/qtextstream.h \
+		/usr/include/qt5/QtCore/qlocale.h \
+		/usr/include/qt5/QtCore/qset.h \
+		/usr/include/qt5/QtCore/qcontiguouscache.h \
+		/usr/include/qt5/QtCore/qurl.h \
+		/usr/include/qt5/QtCore/qurlquery.h \
+		/usr/include/qt5/QtCore/qfile.h \
+		/usr/include/qt5/QtCore/qfiledevice.h \
+		/usr/include/qt5/QtGui/qvector2d.h \
+		/usr/include/qt5/QtGui/qtouchdevice.h \
+		../ie-methods-qt/formulaview.h
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) $(INCPATH) -I/usr/include/c++/4.8 -I/usr/include/x86_64-linux-gnu/c++/4.8 -I/usr/include/c++/4.8/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../ie-methods-qt/formulaview.h -o moc_formulaview.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
 compiler_uic_make_all: ui_mainwindow.h
 compiler_uic_clean:
 	-$(DEL_FILE) ui_mainwindow.h
-ui_mainwindow.h: ../ie-methods-qt/mainwindow.ui
+ui_mainwindow.h: ../ie-methods-qt/mainwindow.ui \
+		../ie-methods-qt/qcustomplot.h \
+		../ie-methods-qt/formulaview.h \
+		/usr/include/qt5/QtCore/QObject \
+		/usr/include/qt5/QtCore/qobject.h \
+		/usr/include/qt5/QtCore/qobjectdefs.h \
+		/usr/include/qt5/QtCore/qnamespace.h \
+		/usr/include/qt5/QtCore/qglobal.h \
+		/usr/include/qt5/QtCore/qconfig.h \
+		/usr/include/qt5/QtCore/qfeatures.h \
+		/usr/include/qt5/QtCore/qsystemdetection.h \
+		/usr/include/qt5/QtCore/qprocessordetection.h \
+		/usr/include/qt5/QtCore/qcompilerdetection.h \
+		/usr/include/qt5/QtCore/qglobalstatic.h \
+		/usr/include/qt5/QtCore/qatomic.h \
+		/usr/include/qt5/QtCore/qbasicatomic.h \
+		/usr/include/qt5/QtCore/qatomic_bootstrap.h \
+		/usr/include/qt5/QtCore/qgenericatomic.h \
+		/usr/include/qt5/QtCore/qatomic_msvc.h \
+		/usr/include/qt5/QtCore/qatomic_integrity.h \
+		/usr/include/qt5/QtCore/qoldbasicatomic.h \
+		/usr/include/qt5/QtCore/qatomic_vxworks.h \
+		/usr/include/qt5/QtCore/qatomic_power.h \
+		/usr/include/qt5/QtCore/qatomic_alpha.h \
+		/usr/include/qt5/QtCore/qatomic_armv7.h \
+		/usr/include/qt5/QtCore/qatomic_armv6.h \
+		/usr/include/qt5/QtCore/qatomic_armv5.h \
+		/usr/include/qt5/QtCore/qatomic_bfin.h \
+		/usr/include/qt5/QtCore/qatomic_ia64.h \
+		/usr/include/qt5/QtCore/qatomic_mips.h \
+		/usr/include/qt5/QtCore/qatomic_s390.h \
+		/usr/include/qt5/QtCore/qatomic_sh4a.h \
+		/usr/include/qt5/QtCore/qatomic_sparc.h \
+		/usr/include/qt5/QtCore/qatomic_gcc.h \
+		/usr/include/qt5/QtCore/qatomic_x86.h \
+		/usr/include/qt5/QtCore/qatomic_cxx11.h \
+		/usr/include/qt5/QtCore/qatomic_unix.h \
+		/usr/include/qt5/QtCore/qmutex.h \
+		/usr/include/qt5/QtCore/qlogging.h \
+		/usr/include/qt5/QtCore/qflags.h \
+		/usr/include/qt5/QtCore/qtypeinfo.h \
+		/usr/include/qt5/QtCore/qtypetraits.h \
+		/usr/include/qt5/QtCore/qsysinfo.h \
+		/usr/include/qt5/QtCore/qobjectdefs_impl.h \
+		/usr/include/qt5/QtCore/qstring.h \
+		/usr/include/qt5/QtCore/qchar.h \
+		/usr/include/qt5/QtCore/qbytearray.h \
+		/usr/include/qt5/QtCore/qrefcount.h \
+		/usr/include/qt5/QtCore/qarraydata.h \
+		/usr/include/qt5/QtCore/qstringbuilder.h \
+		/usr/include/qt5/QtCore/qlist.h \
+		/usr/include/qt5/QtCore/qalgorithms.h \
+		/usr/include/qt5/QtCore/qiterator.h \
+		/usr/include/qt5/QtCore/qcoreevent.h \
+		/usr/include/qt5/QtCore/qscopedpointer.h \
+		/usr/include/qt5/QtCore/qmetatype.h \
+		/usr/include/qt5/QtCore/qvarlengtharray.h \
+		/usr/include/qt5/QtCore/qcontainerfwd.h \
+		/usr/include/qt5/QtCore/qisenum.h \
+		/usr/include/qt5/QtCore/qobject_impl.h \
+		/usr/include/qt5/QtCore/QPointer \
+		/usr/include/qt5/QtCore/qpointer.h \
+		/usr/include/qt5/QtCore/qsharedpointer.h \
+		/usr/include/qt5/QtCore/qshareddata.h \
+		/usr/include/qt5/QtCore/qsharedpointer_impl.h \
+		/usr/include/qt5/QtCore/qhash.h \
+		/usr/include/qt5/QtCore/qpair.h \
+		/usr/include/qt5/QtWidgets/QWidget \
+		/usr/include/qt5/QtWidgets/qwidget.h \
+		/usr/include/qt5/QtGui/qwindowdefs.h \
+		/usr/include/qt5/QtGui/qwindowdefs_win.h \
+		/usr/include/qt5/QtCore/qmargins.h \
+		/usr/include/qt5/QtCore/qrect.h \
+		/usr/include/qt5/QtCore/qsize.h \
+		/usr/include/qt5/QtCore/qpoint.h \
+		/usr/include/qt5/QtGui/qpaintdevice.h \
+		/usr/include/qt5/QtGui/qpalette.h \
+		/usr/include/qt5/QtGui/qcolor.h \
+		/usr/include/qt5/QtGui/qrgb.h \
+		/usr/include/qt5/QtCore/qstringlist.h \
+		/usr/include/qt5/QtCore/qdatastream.h \
+		/usr/include/qt5/QtCore/qiodevice.h \
+		/usr/include/qt5/QtCore/qregexp.h \
+		/usr/include/qt5/QtCore/qstringmatcher.h \
+		/usr/include/qt5/QtGui/qbrush.h \
+		/usr/include/qt5/QtCore/qvector.h \
+		/usr/include/qt5/QtGui/qmatrix.h \
+		/usr/include/qt5/QtGui/qpolygon.h \
+		/usr/include/qt5/QtGui/qregion.h \
+		/usr/include/qt5/QtCore/qline.h \
+		/usr/include/qt5/QtGui/qtransform.h \
+		/usr/include/qt5/QtGui/qpainterpath.h \
+		/usr/include/qt5/QtGui/qimage.h \
+		/usr/include/qt5/QtGui/qpixmap.h \
+		/usr/include/qt5/QtGui/qfont.h \
+		/usr/include/qt5/QtGui/qfontmetrics.h \
+		/usr/include/qt5/QtGui/qfontinfo.h \
+		/usr/include/qt5/QtWidgets/qsizepolicy.h \
+		/usr/include/qt5/QtGui/qcursor.h \
+		/usr/include/qt5/QtGui/qkeysequence.h \
+		/usr/include/qt5/QtGui/qevent.h \
+		/usr/include/qt5/QtCore/qvariant.h \
+		/usr/include/qt5/QtCore/qmap.h \
+		/usr/include/qt5/QtCore/qdebug.h \
+		/usr/include/qt5/QtCore/qtextstream.h \
+		/usr/include/qt5/QtCore/qlocale.h \
+		/usr/include/qt5/QtCore/qset.h \
+		/usr/include/qt5/QtCore/qcontiguouscache.h \
+		/usr/include/qt5/QtCore/qurl.h \
+		/usr/include/qt5/QtCore/qurlquery.h \
+		/usr/include/qt5/QtCore/qfile.h \
+		/usr/include/qt5/QtCore/qfiledevice.h \
+		/usr/include/qt5/QtGui/qvector2d.h \
+		/usr/include/qt5/QtGui/qtouchdevice.h \
+		/usr/include/qt5/QtGui/QPainter \
+		/usr/include/qt5/QtGui/qpainter.h \
+		/usr/include/qt5/QtGui/qtextoption.h \
+		/usr/include/qt5/QtGui/qpen.h \
+		/usr/include/qt5/QtGui/QPaintEvent \
+		/usr/include/qt5/QtGui/QMouseEvent \
+		/usr/include/qt5/QtGui/QPixmap \
+		/usr/include/qt5/QtCore/QVector \
+		/usr/include/qt5/QtCore/QString \
+		/usr/include/qt5/QtCore/QDateTime \
+		/usr/include/qt5/QtCore/qdatetime.h \
+		/usr/include/qt5/QtCore/QMultiMap \
+		/usr/include/qt5/QtCore/QFlags \
+		/usr/include/qt5/QtCore/QDebug \
+		/usr/include/qt5/QtGui/QVector2D \
+		/usr/include/qt5/QtCore/QStack \
+		/usr/include/qt5/QtCore/qstack.h \
+		/usr/include/qt5/QtCore/QCache \
+		/usr/include/qt5/QtCore/qcache.h \
+		/usr/include/qt5/QtCore/QMargins \
+		/usr/include/qt5/QtCore/qmath.h \
+		/usr/include/qt5/QtCore/qnumeric.h \
+		/usr/include/qt5/QtCore/QtNumeric \
+		/usr/include/qt5/QtWidgets/qwidget.h \
+		/usr/include/qt5/QtGui/qwindowdefs.h \
+		/usr/include/qt5/QtCore/qglobal.h \
+		/usr/include/qt5/QtCore/qconfig.h \
+		/usr/include/qt5/QtCore/qfeatures.h \
+		/usr/include/qt5/QtCore/qsystemdetection.h \
+		/usr/include/qt5/QtCore/qprocessordetection.h \
+		/usr/include/qt5/QtCore/qcompilerdetection.h \
+		/usr/include/qt5/QtCore/qglobalstatic.h \
+		/usr/include/qt5/QtCore/qatomic.h \
+		/usr/include/qt5/QtCore/qbasicatomic.h \
+		/usr/include/qt5/QtCore/qatomic_bootstrap.h \
+		/usr/include/qt5/QtCore/qgenericatomic.h \
+		/usr/include/qt5/QtCore/qatomic_msvc.h \
+		/usr/include/qt5/QtCore/qatomic_integrity.h \
+		/usr/include/qt5/QtCore/qoldbasicatomic.h \
+		/usr/include/qt5/QtCore/qatomic_vxworks.h \
+		/usr/include/qt5/QtCore/qatomic_power.h \
+		/usr/include/qt5/QtCore/qatomic_alpha.h \
+		/usr/include/qt5/QtCore/qatomic_armv7.h \
+		/usr/include/qt5/QtCore/qatomic_armv6.h \
+		/usr/include/qt5/QtCore/qatomic_armv5.h \
+		/usr/include/qt5/QtCore/qatomic_bfin.h \
+		/usr/include/qt5/QtCore/qatomic_ia64.h \
+		/usr/include/qt5/QtCore/qatomic_mips.h \
+		/usr/include/qt5/QtCore/qatomic_s390.h \
+		/usr/include/qt5/QtCore/qatomic_sh4a.h \
+		/usr/include/qt5/QtCore/qatomic_sparc.h \
+		/usr/include/qt5/QtCore/qatomic_gcc.h \
+		/usr/include/qt5/QtCore/qatomic_x86.h \
+		/usr/include/qt5/QtCore/qatomic_cxx11.h \
+		/usr/include/qt5/QtCore/qatomic_unix.h \
+		/usr/include/qt5/QtCore/qmutex.h \
+		/usr/include/qt5/QtCore/qlogging.h \
+		/usr/include/qt5/QtCore/qflags.h \
+		/usr/include/qt5/QtCore/qtypeinfo.h \
+		/usr/include/qt5/QtCore/qtypetraits.h \
+		/usr/include/qt5/QtCore/qsysinfo.h \
+		/usr/include/qt5/QtCore/qobjectdefs.h \
+		/usr/include/qt5/QtCore/qnamespace.h \
+		/usr/include/qt5/QtCore/qobjectdefs_impl.h \
+		/usr/include/qt5/QtGui/qwindowdefs_win.h \
+		/usr/include/qt5/QtCore/qobject.h \
+		/usr/include/qt5/QtCore/qstring.h \
+		/usr/include/qt5/QtCore/qchar.h \
+		/usr/include/qt5/QtCore/qbytearray.h \
+		/usr/include/qt5/QtCore/qrefcount.h \
+		/usr/include/qt5/QtCore/qarraydata.h \
+		/usr/include/qt5/QtCore/qstringbuilder.h \
+		/usr/include/qt5/QtCore/qlist.h \
+		/usr/include/qt5/QtCore/qalgorithms.h \
+		/usr/include/qt5/QtCore/qiterator.h \
+		/usr/include/qt5/QtCore/qcoreevent.h \
+		/usr/include/qt5/QtCore/qscopedpointer.h \
+		/usr/include/qt5/QtCore/qmetatype.h \
+		/usr/include/qt5/QtCore/qvarlengtharray.h \
+		/usr/include/qt5/QtCore/qcontainerfwd.h \
+		/usr/include/qt5/QtCore/qisenum.h \
+		/usr/include/qt5/QtCore/qobject_impl.h \
+		/usr/include/qt5/QtCore/qmargins.h \
+		/usr/include/qt5/QtCore/qrect.h \
+		/usr/include/qt5/QtCore/qsize.h \
+		/usr/include/qt5/QtCore/qpoint.h \
+		/usr/include/qt5/QtGui/qpaintdevice.h \
+		/usr/include/qt5/QtGui/qpalette.h \
+		/usr/include/qt5/QtGui/qcolor.h \
+		/usr/include/qt5/QtGui/qrgb.h \
+		/usr/include/qt5/QtCore/qstringlist.h \
+		/usr/include/qt5/QtCore/qdatastream.h \
+		/usr/include/qt5/QtCore/qiodevice.h \
+		/usr/include/qt5/QtCore/qpair.h \
+		/usr/include/qt5/QtCore/qregexp.h \
+		/usr/include/qt5/QtCore/qstringmatcher.h \
+		/usr/include/qt5/QtGui/qbrush.h \
+		/usr/include/qt5/QtCore/qvector.h \
+		/usr/include/qt5/QtGui/qmatrix.h \
+		/usr/include/qt5/QtGui/qpolygon.h \
+		/usr/include/qt5/QtGui/qregion.h \
+		/usr/include/qt5/QtCore/qline.h \
+		/usr/include/qt5/QtGui/qtransform.h \
+		/usr/include/qt5/QtGui/qpainterpath.h \
+		/usr/include/qt5/QtGui/qimage.h \
+		/usr/include/qt5/QtGui/qpixmap.h \
+		/usr/include/qt5/QtCore/qsharedpointer.h \
+		/usr/include/qt5/QtCore/qshareddata.h \
+		/usr/include/qt5/QtCore/qsharedpointer_impl.h \
+		/usr/include/qt5/QtCore/qhash.h \
+		/usr/include/qt5/QtGui/qfont.h \
+		/usr/include/qt5/QtGui/qfontmetrics.h \
+		/usr/include/qt5/QtGui/qfontinfo.h \
+		/usr/include/qt5/QtWidgets/qsizepolicy.h \
+		/usr/include/qt5/QtGui/qcursor.h \
+		/usr/include/qt5/QtGui/qkeysequence.h \
+		/usr/include/qt5/QtGui/qevent.h \
+		/usr/include/qt5/QtCore/qvariant.h \
+		/usr/include/qt5/QtCore/qmap.h \
+		/usr/include/qt5/QtCore/qdebug.h \
+		/usr/include/qt5/QtCore/qtextstream.h \
+		/usr/include/qt5/QtCore/qlocale.h \
+		/usr/include/qt5/QtCore/qset.h \
+		/usr/include/qt5/QtCore/qcontiguouscache.h \
+		/usr/include/qt5/QtCore/qurl.h \
+		/usr/include/qt5/QtCore/qurlquery.h \
+		/usr/include/qt5/QtCore/qfile.h \
+		/usr/include/qt5/QtCore/qfiledevice.h \
+		/usr/include/qt5/QtGui/qvector2d.h \
+		/usr/include/qt5/QtGui/qtouchdevice.h
 	/usr/lib/x86_64-linux-gnu/qt5/bin/uic ../ie-methods-qt/mainwindow.ui -o ui_mainwindow.h
 
 compiler_yacc_decl_make_all:
@@ -562,19 +1072,17 @@ main.o: ../ie-methods-qt/main.cpp ../ie-methods-qt/mainwindow.h \
 		/usr/include/qt5/QtGui/qtouchdevice.h \
 		/usr/include/qt5/QtWidgets/qtabwidget.h \
 		/usr/include/qt5/QtGui/qicon.h \
+		../ie-methods-qt/iterationmethodcommon.h \
+		../ie-methods-qt/iterationmethodpositive.h \
+		../ie-methods-qt/approximation.h \
+		../ie-methods-qt/ietypes.h \
 		/usr/include/qt5/QtWidgets/QApplication \
 		/usr/include/qt5/QtWidgets/qapplication.h \
 		/usr/include/qt5/QtCore/qcoreapplication.h \
 		/usr/include/qt5/QtCore/qeventloop.h \
 		/usr/include/qt5/QtWidgets/qdesktopwidget.h \
 		/usr/include/qt5/QtGui/qguiapplication.h \
-		/usr/include/qt5/QtGui/qinputmethod.h \
-		../ie-methods-qt/approximation.h \
-		../ie-methods-qt/ietypes.h \
-		../ie-methods-qt/iterationmethodpositive.h \
-		../ie-methods-qt/iterationmethodcommon.h \
-		../ie-methods-qt/iterationmethoddirichletkernel.h \
-		../ie-methods-qt/mathextensions.h
+		/usr/include/qt5/QtGui/qinputmethod.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../ie-methods-qt/main.cpp
 
 mainwindow.o: ../ie-methods-qt/mainwindow.cpp ../ie-methods-qt/mainwindow.h \
@@ -689,6 +1197,10 @@ mainwindow.o: ../ie-methods-qt/mainwindow.cpp ../ie-methods-qt/mainwindow.h \
 		/usr/include/qt5/QtGui/qtouchdevice.h \
 		/usr/include/qt5/QtWidgets/qtabwidget.h \
 		/usr/include/qt5/QtGui/qicon.h \
+		../ie-methods-qt/iterationmethodcommon.h \
+		../ie-methods-qt/iterationmethodpositive.h \
+		../ie-methods-qt/approximation.h \
+		../ie-methods-qt/ietypes.h \
 		ui_mainwindow.h \
 		/usr/include/qt5/QtCore/QVariant \
 		/usr/include/qt5/QtWidgets/QAction \
@@ -728,14 +1240,479 @@ mainwindow.o: ../ie-methods-qt/mainwindow.cpp ../ie-methods-qt/mainwindow.h \
 		/usr/include/qt5/QtWidgets/QToolBar \
 		/usr/include/qt5/QtWidgets/qtoolbar.h \
 		/usr/include/qt5/QtWidgets/QWidget \
-		../ie-methods-qt/approximation.h \
-		../ie-methods-qt/ietypes.h
+		/usr/include/qt5/QtCore/QDebug \
+		/usr/include/qt5/QtCore/QVector \
+		/usr/include/qt5/QtWidgets/QFileDialog \
+		/usr/include/qt5/QtWidgets/qfiledialog.h \
+		/usr/include/qt5/QtCore/qdir.h \
+		/usr/include/qt5/QtCore/qfileinfo.h \
+		/usr/include/qt5/QtWidgets/qdialog.h \
+		../ie-methods-qt/iterationmethoddirichletkernel.h \
+		../ie-methods-qt/mathextensions.h \
+		../ie-methods-qt/mathfunctions.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../ie-methods-qt/mainwindow.cpp
 
 iterationmethodpositive.o: ../ie-methods-qt/iterationmethodpositive.cpp ../ie-methods-qt/iterationmethodpositive.h \
 		../ie-methods-qt/approximation.h \
 		../ie-methods-qt/ietypes.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o iterationmethodpositive.o ../ie-methods-qt/iterationmethodpositive.cpp
+
+qcustomplot.o: ../ie-methods-qt/qcustomplot.cpp ../ie-methods-qt/qcustomplot.h \
+		/usr/include/qt5/QtCore/QObject \
+		/usr/include/qt5/QtCore/qobject.h \
+		/usr/include/qt5/QtCore/qobjectdefs.h \
+		/usr/include/qt5/QtCore/qnamespace.h \
+		/usr/include/qt5/QtCore/qglobal.h \
+		/usr/include/qt5/QtCore/qconfig.h \
+		/usr/include/qt5/QtCore/qfeatures.h \
+		/usr/include/qt5/QtCore/qsystemdetection.h \
+		/usr/include/qt5/QtCore/qprocessordetection.h \
+		/usr/include/qt5/QtCore/qcompilerdetection.h \
+		/usr/include/qt5/QtCore/qglobalstatic.h \
+		/usr/include/qt5/QtCore/qatomic.h \
+		/usr/include/qt5/QtCore/qbasicatomic.h \
+		/usr/include/qt5/QtCore/qatomic_bootstrap.h \
+		/usr/include/qt5/QtCore/qgenericatomic.h \
+		/usr/include/qt5/QtCore/qatomic_msvc.h \
+		/usr/include/qt5/QtCore/qatomic_integrity.h \
+		/usr/include/qt5/QtCore/qoldbasicatomic.h \
+		/usr/include/qt5/QtCore/qatomic_vxworks.h \
+		/usr/include/qt5/QtCore/qatomic_power.h \
+		/usr/include/qt5/QtCore/qatomic_alpha.h \
+		/usr/include/qt5/QtCore/qatomic_armv7.h \
+		/usr/include/qt5/QtCore/qatomic_armv6.h \
+		/usr/include/qt5/QtCore/qatomic_armv5.h \
+		/usr/include/qt5/QtCore/qatomic_bfin.h \
+		/usr/include/qt5/QtCore/qatomic_ia64.h \
+		/usr/include/qt5/QtCore/qatomic_mips.h \
+		/usr/include/qt5/QtCore/qatomic_s390.h \
+		/usr/include/qt5/QtCore/qatomic_sh4a.h \
+		/usr/include/qt5/QtCore/qatomic_sparc.h \
+		/usr/include/qt5/QtCore/qatomic_gcc.h \
+		/usr/include/qt5/QtCore/qatomic_x86.h \
+		/usr/include/qt5/QtCore/qatomic_cxx11.h \
+		/usr/include/qt5/QtCore/qatomic_unix.h \
+		/usr/include/qt5/QtCore/qmutex.h \
+		/usr/include/qt5/QtCore/qlogging.h \
+		/usr/include/qt5/QtCore/qflags.h \
+		/usr/include/qt5/QtCore/qtypeinfo.h \
+		/usr/include/qt5/QtCore/qtypetraits.h \
+		/usr/include/qt5/QtCore/qsysinfo.h \
+		/usr/include/qt5/QtCore/qobjectdefs_impl.h \
+		/usr/include/qt5/QtCore/qstring.h \
+		/usr/include/qt5/QtCore/qchar.h \
+		/usr/include/qt5/QtCore/qbytearray.h \
+		/usr/include/qt5/QtCore/qrefcount.h \
+		/usr/include/qt5/QtCore/qarraydata.h \
+		/usr/include/qt5/QtCore/qstringbuilder.h \
+		/usr/include/qt5/QtCore/qlist.h \
+		/usr/include/qt5/QtCore/qalgorithms.h \
+		/usr/include/qt5/QtCore/qiterator.h \
+		/usr/include/qt5/QtCore/qcoreevent.h \
+		/usr/include/qt5/QtCore/qscopedpointer.h \
+		/usr/include/qt5/QtCore/qmetatype.h \
+		/usr/include/qt5/QtCore/qvarlengtharray.h \
+		/usr/include/qt5/QtCore/qcontainerfwd.h \
+		/usr/include/qt5/QtCore/qisenum.h \
+		/usr/include/qt5/QtCore/qobject_impl.h \
+		/usr/include/qt5/QtCore/QPointer \
+		/usr/include/qt5/QtCore/qpointer.h \
+		/usr/include/qt5/QtCore/qsharedpointer.h \
+		/usr/include/qt5/QtCore/qshareddata.h \
+		/usr/include/qt5/QtCore/qsharedpointer_impl.h \
+		/usr/include/qt5/QtCore/qhash.h \
+		/usr/include/qt5/QtCore/qpair.h \
+		/usr/include/qt5/QtWidgets/QWidget \
+		/usr/include/qt5/QtWidgets/qwidget.h \
+		/usr/include/qt5/QtGui/qwindowdefs.h \
+		/usr/include/qt5/QtGui/qwindowdefs_win.h \
+		/usr/include/qt5/QtCore/qmargins.h \
+		/usr/include/qt5/QtCore/qrect.h \
+		/usr/include/qt5/QtCore/qsize.h \
+		/usr/include/qt5/QtCore/qpoint.h \
+		/usr/include/qt5/QtGui/qpaintdevice.h \
+		/usr/include/qt5/QtGui/qpalette.h \
+		/usr/include/qt5/QtGui/qcolor.h \
+		/usr/include/qt5/QtGui/qrgb.h \
+		/usr/include/qt5/QtCore/qstringlist.h \
+		/usr/include/qt5/QtCore/qdatastream.h \
+		/usr/include/qt5/QtCore/qiodevice.h \
+		/usr/include/qt5/QtCore/qregexp.h \
+		/usr/include/qt5/QtCore/qstringmatcher.h \
+		/usr/include/qt5/QtGui/qbrush.h \
+		/usr/include/qt5/QtCore/qvector.h \
+		/usr/include/qt5/QtGui/qmatrix.h \
+		/usr/include/qt5/QtGui/qpolygon.h \
+		/usr/include/qt5/QtGui/qregion.h \
+		/usr/include/qt5/QtCore/qline.h \
+		/usr/include/qt5/QtGui/qtransform.h \
+		/usr/include/qt5/QtGui/qpainterpath.h \
+		/usr/include/qt5/QtGui/qimage.h \
+		/usr/include/qt5/QtGui/qpixmap.h \
+		/usr/include/qt5/QtGui/qfont.h \
+		/usr/include/qt5/QtGui/qfontmetrics.h \
+		/usr/include/qt5/QtGui/qfontinfo.h \
+		/usr/include/qt5/QtWidgets/qsizepolicy.h \
+		/usr/include/qt5/QtGui/qcursor.h \
+		/usr/include/qt5/QtGui/qkeysequence.h \
+		/usr/include/qt5/QtGui/qevent.h \
+		/usr/include/qt5/QtCore/qvariant.h \
+		/usr/include/qt5/QtCore/qmap.h \
+		/usr/include/qt5/QtCore/qdebug.h \
+		/usr/include/qt5/QtCore/qtextstream.h \
+		/usr/include/qt5/QtCore/qlocale.h \
+		/usr/include/qt5/QtCore/qset.h \
+		/usr/include/qt5/QtCore/qcontiguouscache.h \
+		/usr/include/qt5/QtCore/qurl.h \
+		/usr/include/qt5/QtCore/qurlquery.h \
+		/usr/include/qt5/QtCore/qfile.h \
+		/usr/include/qt5/QtCore/qfiledevice.h \
+		/usr/include/qt5/QtGui/qvector2d.h \
+		/usr/include/qt5/QtGui/qtouchdevice.h \
+		/usr/include/qt5/QtGui/QPainter \
+		/usr/include/qt5/QtGui/qpainter.h \
+		/usr/include/qt5/QtGui/qtextoption.h \
+		/usr/include/qt5/QtGui/qpen.h \
+		/usr/include/qt5/QtGui/QPaintEvent \
+		/usr/include/qt5/QtGui/QMouseEvent \
+		/usr/include/qt5/QtGui/QPixmap \
+		/usr/include/qt5/QtCore/QVector \
+		/usr/include/qt5/QtCore/QString \
+		/usr/include/qt5/QtCore/QDateTime \
+		/usr/include/qt5/QtCore/qdatetime.h \
+		/usr/include/qt5/QtCore/QMultiMap \
+		/usr/include/qt5/QtCore/QFlags \
+		/usr/include/qt5/QtCore/QDebug \
+		/usr/include/qt5/QtGui/QVector2D \
+		/usr/include/qt5/QtCore/QStack \
+		/usr/include/qt5/QtCore/qstack.h \
+		/usr/include/qt5/QtCore/QCache \
+		/usr/include/qt5/QtCore/qcache.h \
+		/usr/include/qt5/QtCore/QMargins \
+		/usr/include/qt5/QtCore/qmath.h \
+		/usr/include/qt5/QtCore/qnumeric.h \
+		/usr/include/qt5/QtCore/QtNumeric
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qcustomplot.o ../ie-methods-qt/qcustomplot.cpp
+
+qwt_mml_document.o: ../ie-methods-qt/qwt_mml_document.cpp ../ie-methods-qt/qwt_mml_document.h \
+		/usr/include/qt5/QtGui/qcolor.h \
+		/usr/include/qt5/QtGui/qrgb.h \
+		/usr/include/qt5/QtCore/qglobal.h \
+		/usr/include/qt5/QtCore/qconfig.h \
+		/usr/include/qt5/QtCore/qfeatures.h \
+		/usr/include/qt5/QtCore/qsystemdetection.h \
+		/usr/include/qt5/QtCore/qprocessordetection.h \
+		/usr/include/qt5/QtCore/qcompilerdetection.h \
+		/usr/include/qt5/QtCore/qglobalstatic.h \
+		/usr/include/qt5/QtCore/qatomic.h \
+		/usr/include/qt5/QtCore/qbasicatomic.h \
+		/usr/include/qt5/QtCore/qatomic_bootstrap.h \
+		/usr/include/qt5/QtCore/qgenericatomic.h \
+		/usr/include/qt5/QtCore/qatomic_msvc.h \
+		/usr/include/qt5/QtCore/qatomic_integrity.h \
+		/usr/include/qt5/QtCore/qoldbasicatomic.h \
+		/usr/include/qt5/QtCore/qatomic_vxworks.h \
+		/usr/include/qt5/QtCore/qatomic_power.h \
+		/usr/include/qt5/QtCore/qatomic_alpha.h \
+		/usr/include/qt5/QtCore/qatomic_armv7.h \
+		/usr/include/qt5/QtCore/qatomic_armv6.h \
+		/usr/include/qt5/QtCore/qatomic_armv5.h \
+		/usr/include/qt5/QtCore/qatomic_bfin.h \
+		/usr/include/qt5/QtCore/qatomic_ia64.h \
+		/usr/include/qt5/QtCore/qatomic_mips.h \
+		/usr/include/qt5/QtCore/qatomic_s390.h \
+		/usr/include/qt5/QtCore/qatomic_sh4a.h \
+		/usr/include/qt5/QtCore/qatomic_sparc.h \
+		/usr/include/qt5/QtCore/qatomic_gcc.h \
+		/usr/include/qt5/QtCore/qatomic_x86.h \
+		/usr/include/qt5/QtCore/qatomic_cxx11.h \
+		/usr/include/qt5/QtCore/qatomic_unix.h \
+		/usr/include/qt5/QtCore/qmutex.h \
+		/usr/include/qt5/QtCore/qlogging.h \
+		/usr/include/qt5/QtCore/qflags.h \
+		/usr/include/qt5/QtCore/qtypeinfo.h \
+		/usr/include/qt5/QtCore/qtypetraits.h \
+		/usr/include/qt5/QtCore/qsysinfo.h \
+		/usr/include/qt5/QtCore/qnamespace.h \
+		/usr/include/qt5/QtCore/qstringlist.h \
+		/usr/include/qt5/QtCore/qalgorithms.h \
+		/usr/include/qt5/QtCore/qdatastream.h \
+		/usr/include/qt5/QtCore/qscopedpointer.h \
+		/usr/include/qt5/QtCore/qiodevice.h \
+		/usr/include/qt5/QtCore/qobject.h \
+		/usr/include/qt5/QtCore/qobjectdefs.h \
+		/usr/include/qt5/QtCore/qobjectdefs_impl.h \
+		/usr/include/qt5/QtCore/qstring.h \
+		/usr/include/qt5/QtCore/qchar.h \
+		/usr/include/qt5/QtCore/qbytearray.h \
+		/usr/include/qt5/QtCore/qrefcount.h \
+		/usr/include/qt5/QtCore/qarraydata.h \
+		/usr/include/qt5/QtCore/qstringbuilder.h \
+		/usr/include/qt5/QtCore/qlist.h \
+		/usr/include/qt5/QtCore/qiterator.h \
+		/usr/include/qt5/QtCore/qcoreevent.h \
+		/usr/include/qt5/QtCore/qmetatype.h \
+		/usr/include/qt5/QtCore/qvarlengtharray.h \
+		/usr/include/qt5/QtCore/qcontainerfwd.h \
+		/usr/include/qt5/QtCore/qisenum.h \
+		/usr/include/qt5/QtCore/qobject_impl.h \
+		/usr/include/qt5/QtCore/qpair.h \
+		/usr/include/qt5/QtCore/qregexp.h \
+		/usr/include/qt5/QtCore/qstringmatcher.h \
+		/usr/include/qt5/QtCore/qsize.h \
+		../ie-methods-qt/qwt_mml_entity_table.h \
+		/usr/include/qt5/QtWidgets/qapplication.h \
+		/usr/include/qt5/QtCore/qcoreapplication.h \
+		/usr/include/qt5/QtCore/qeventloop.h \
+		/usr/include/qt5/QtGui/qwindowdefs.h \
+		/usr/include/qt5/QtGui/qwindowdefs_win.h \
+		/usr/include/qt5/QtCore/qpoint.h \
+		/usr/include/qt5/QtGui/qcursor.h \
+		/usr/include/qt5/QtWidgets/qdesktopwidget.h \
+		/usr/include/qt5/QtWidgets/qwidget.h \
+		/usr/include/qt5/QtCore/qmargins.h \
+		/usr/include/qt5/QtCore/qrect.h \
+		/usr/include/qt5/QtGui/qpaintdevice.h \
+		/usr/include/qt5/QtGui/qpalette.h \
+		/usr/include/qt5/QtGui/qbrush.h \
+		/usr/include/qt5/QtCore/qvector.h \
+		/usr/include/qt5/QtGui/qmatrix.h \
+		/usr/include/qt5/QtGui/qpolygon.h \
+		/usr/include/qt5/QtGui/qregion.h \
+		/usr/include/qt5/QtCore/qline.h \
+		/usr/include/qt5/QtGui/qtransform.h \
+		/usr/include/qt5/QtGui/qpainterpath.h \
+		/usr/include/qt5/QtGui/qimage.h \
+		/usr/include/qt5/QtGui/qpixmap.h \
+		/usr/include/qt5/QtCore/qsharedpointer.h \
+		/usr/include/qt5/QtCore/qshareddata.h \
+		/usr/include/qt5/QtCore/qsharedpointer_impl.h \
+		/usr/include/qt5/QtCore/qhash.h \
+		/usr/include/qt5/QtGui/qfont.h \
+		/usr/include/qt5/QtGui/qfontmetrics.h \
+		/usr/include/qt5/QtGui/qfontinfo.h \
+		/usr/include/qt5/QtWidgets/qsizepolicy.h \
+		/usr/include/qt5/QtGui/qkeysequence.h \
+		/usr/include/qt5/QtGui/qevent.h \
+		/usr/include/qt5/QtCore/qvariant.h \
+		/usr/include/qt5/QtCore/qmap.h \
+		/usr/include/qt5/QtCore/qdebug.h \
+		/usr/include/qt5/QtCore/qtextstream.h \
+		/usr/include/qt5/QtCore/qlocale.h \
+		/usr/include/qt5/QtCore/qset.h \
+		/usr/include/qt5/QtCore/qcontiguouscache.h \
+		/usr/include/qt5/QtCore/qurl.h \
+		/usr/include/qt5/QtCore/qurlquery.h \
+		/usr/include/qt5/QtCore/qfile.h \
+		/usr/include/qt5/QtCore/qfiledevice.h \
+		/usr/include/qt5/QtGui/qvector2d.h \
+		/usr/include/qt5/QtGui/qtouchdevice.h \
+		/usr/include/qt5/QtGui/qguiapplication.h \
+		/usr/include/qt5/QtGui/qinputmethod.h \
+		/usr/include/qt5/QtXml/qdom.h \
+		/usr/include/qt5/QtXml/qtxmlglobal.h \
+		/usr/include/qt5/QtGui/qfontdatabase.h \
+		/usr/include/qt5/QtCore/qmath.h \
+		/usr/include/qt5/QtGui/qpainter.h \
+		/usr/include/qt5/QtGui/qtextoption.h \
+		/usr/include/qt5/QtGui/qpen.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qwt_mml_document.o ../ie-methods-qt/qwt_mml_document.cpp
+
+qwt_mml_entity_table.o: ../ie-methods-qt/qwt_mml_entity_table.cpp ../ie-methods-qt/qwt_mml_entity_table.h \
+		/usr/include/qt5/QtCore/qstring.h \
+		/usr/include/qt5/QtCore/qchar.h \
+		/usr/include/qt5/QtCore/qglobal.h \
+		/usr/include/qt5/QtCore/qconfig.h \
+		/usr/include/qt5/QtCore/qfeatures.h \
+		/usr/include/qt5/QtCore/qsystemdetection.h \
+		/usr/include/qt5/QtCore/qprocessordetection.h \
+		/usr/include/qt5/QtCore/qcompilerdetection.h \
+		/usr/include/qt5/QtCore/qglobalstatic.h \
+		/usr/include/qt5/QtCore/qatomic.h \
+		/usr/include/qt5/QtCore/qbasicatomic.h \
+		/usr/include/qt5/QtCore/qatomic_bootstrap.h \
+		/usr/include/qt5/QtCore/qgenericatomic.h \
+		/usr/include/qt5/QtCore/qatomic_msvc.h \
+		/usr/include/qt5/QtCore/qatomic_integrity.h \
+		/usr/include/qt5/QtCore/qoldbasicatomic.h \
+		/usr/include/qt5/QtCore/qatomic_vxworks.h \
+		/usr/include/qt5/QtCore/qatomic_power.h \
+		/usr/include/qt5/QtCore/qatomic_alpha.h \
+		/usr/include/qt5/QtCore/qatomic_armv7.h \
+		/usr/include/qt5/QtCore/qatomic_armv6.h \
+		/usr/include/qt5/QtCore/qatomic_armv5.h \
+		/usr/include/qt5/QtCore/qatomic_bfin.h \
+		/usr/include/qt5/QtCore/qatomic_ia64.h \
+		/usr/include/qt5/QtCore/qatomic_mips.h \
+		/usr/include/qt5/QtCore/qatomic_s390.h \
+		/usr/include/qt5/QtCore/qatomic_sh4a.h \
+		/usr/include/qt5/QtCore/qatomic_sparc.h \
+		/usr/include/qt5/QtCore/qatomic_gcc.h \
+		/usr/include/qt5/QtCore/qatomic_x86.h \
+		/usr/include/qt5/QtCore/qatomic_cxx11.h \
+		/usr/include/qt5/QtCore/qatomic_unix.h \
+		/usr/include/qt5/QtCore/qmutex.h \
+		/usr/include/qt5/QtCore/qlogging.h \
+		/usr/include/qt5/QtCore/qflags.h \
+		/usr/include/qt5/QtCore/qtypeinfo.h \
+		/usr/include/qt5/QtCore/qtypetraits.h \
+		/usr/include/qt5/QtCore/qsysinfo.h \
+		/usr/include/qt5/QtCore/qbytearray.h \
+		/usr/include/qt5/QtCore/qrefcount.h \
+		/usr/include/qt5/QtCore/qnamespace.h \
+		/usr/include/qt5/QtCore/qarraydata.h \
+		/usr/include/qt5/QtCore/qstringbuilder.h \
+		/usr/include/qt5/QtCore/qdebug.h \
+		/usr/include/qt5/QtCore/qalgorithms.h \
+		/usr/include/qt5/QtCore/qhash.h \
+		/usr/include/qt5/QtCore/qiterator.h \
+		/usr/include/qt5/QtCore/qlist.h \
+		/usr/include/qt5/QtCore/qpair.h \
+		/usr/include/qt5/QtCore/qmap.h \
+		/usr/include/qt5/QtCore/qtextstream.h \
+		/usr/include/qt5/QtCore/qiodevice.h \
+		/usr/include/qt5/QtCore/qobject.h \
+		/usr/include/qt5/QtCore/qobjectdefs.h \
+		/usr/include/qt5/QtCore/qobjectdefs_impl.h \
+		/usr/include/qt5/QtCore/qcoreevent.h \
+		/usr/include/qt5/QtCore/qscopedpointer.h \
+		/usr/include/qt5/QtCore/qmetatype.h \
+		/usr/include/qt5/QtCore/qvarlengtharray.h \
+		/usr/include/qt5/QtCore/qcontainerfwd.h \
+		/usr/include/qt5/QtCore/qisenum.h \
+		/usr/include/qt5/QtCore/qobject_impl.h \
+		/usr/include/qt5/QtCore/qlocale.h \
+		/usr/include/qt5/QtCore/qvariant.h \
+		/usr/include/qt5/QtCore/qstringlist.h \
+		/usr/include/qt5/QtCore/qdatastream.h \
+		/usr/include/qt5/QtCore/qregexp.h \
+		/usr/include/qt5/QtCore/qstringmatcher.h \
+		/usr/include/qt5/QtCore/qshareddata.h \
+		/usr/include/qt5/QtCore/qvector.h \
+		/usr/include/qt5/QtCore/qpoint.h \
+		/usr/include/qt5/QtCore/qset.h \
+		/usr/include/qt5/QtCore/qcontiguouscache.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qwt_mml_entity_table.o ../ie-methods-qt/qwt_mml_entity_table.cpp
+
+formulaview.o: ../ie-methods-qt/formulaview.cpp ../ie-methods-qt/formulaview.h \
+		/usr/include/qt5/QtWidgets/qwidget.h \
+		/usr/include/qt5/QtGui/qwindowdefs.h \
+		/usr/include/qt5/QtCore/qglobal.h \
+		/usr/include/qt5/QtCore/qconfig.h \
+		/usr/include/qt5/QtCore/qfeatures.h \
+		/usr/include/qt5/QtCore/qsystemdetection.h \
+		/usr/include/qt5/QtCore/qprocessordetection.h \
+		/usr/include/qt5/QtCore/qcompilerdetection.h \
+		/usr/include/qt5/QtCore/qglobalstatic.h \
+		/usr/include/qt5/QtCore/qatomic.h \
+		/usr/include/qt5/QtCore/qbasicatomic.h \
+		/usr/include/qt5/QtCore/qatomic_bootstrap.h \
+		/usr/include/qt5/QtCore/qgenericatomic.h \
+		/usr/include/qt5/QtCore/qatomic_msvc.h \
+		/usr/include/qt5/QtCore/qatomic_integrity.h \
+		/usr/include/qt5/QtCore/qoldbasicatomic.h \
+		/usr/include/qt5/QtCore/qatomic_vxworks.h \
+		/usr/include/qt5/QtCore/qatomic_power.h \
+		/usr/include/qt5/QtCore/qatomic_alpha.h \
+		/usr/include/qt5/QtCore/qatomic_armv7.h \
+		/usr/include/qt5/QtCore/qatomic_armv6.h \
+		/usr/include/qt5/QtCore/qatomic_armv5.h \
+		/usr/include/qt5/QtCore/qatomic_bfin.h \
+		/usr/include/qt5/QtCore/qatomic_ia64.h \
+		/usr/include/qt5/QtCore/qatomic_mips.h \
+		/usr/include/qt5/QtCore/qatomic_s390.h \
+		/usr/include/qt5/QtCore/qatomic_sh4a.h \
+		/usr/include/qt5/QtCore/qatomic_sparc.h \
+		/usr/include/qt5/QtCore/qatomic_gcc.h \
+		/usr/include/qt5/QtCore/qatomic_x86.h \
+		/usr/include/qt5/QtCore/qatomic_cxx11.h \
+		/usr/include/qt5/QtCore/qatomic_unix.h \
+		/usr/include/qt5/QtCore/qmutex.h \
+		/usr/include/qt5/QtCore/qlogging.h \
+		/usr/include/qt5/QtCore/qflags.h \
+		/usr/include/qt5/QtCore/qtypeinfo.h \
+		/usr/include/qt5/QtCore/qtypetraits.h \
+		/usr/include/qt5/QtCore/qsysinfo.h \
+		/usr/include/qt5/QtCore/qobjectdefs.h \
+		/usr/include/qt5/QtCore/qnamespace.h \
+		/usr/include/qt5/QtCore/qobjectdefs_impl.h \
+		/usr/include/qt5/QtGui/qwindowdefs_win.h \
+		/usr/include/qt5/QtCore/qobject.h \
+		/usr/include/qt5/QtCore/qstring.h \
+		/usr/include/qt5/QtCore/qchar.h \
+		/usr/include/qt5/QtCore/qbytearray.h \
+		/usr/include/qt5/QtCore/qrefcount.h \
+		/usr/include/qt5/QtCore/qarraydata.h \
+		/usr/include/qt5/QtCore/qstringbuilder.h \
+		/usr/include/qt5/QtCore/qlist.h \
+		/usr/include/qt5/QtCore/qalgorithms.h \
+		/usr/include/qt5/QtCore/qiterator.h \
+		/usr/include/qt5/QtCore/qcoreevent.h \
+		/usr/include/qt5/QtCore/qscopedpointer.h \
+		/usr/include/qt5/QtCore/qmetatype.h \
+		/usr/include/qt5/QtCore/qvarlengtharray.h \
+		/usr/include/qt5/QtCore/qcontainerfwd.h \
+		/usr/include/qt5/QtCore/qisenum.h \
+		/usr/include/qt5/QtCore/qobject_impl.h \
+		/usr/include/qt5/QtCore/qmargins.h \
+		/usr/include/qt5/QtCore/qrect.h \
+		/usr/include/qt5/QtCore/qsize.h \
+		/usr/include/qt5/QtCore/qpoint.h \
+		/usr/include/qt5/QtGui/qpaintdevice.h \
+		/usr/include/qt5/QtGui/qpalette.h \
+		/usr/include/qt5/QtGui/qcolor.h \
+		/usr/include/qt5/QtGui/qrgb.h \
+		/usr/include/qt5/QtCore/qstringlist.h \
+		/usr/include/qt5/QtCore/qdatastream.h \
+		/usr/include/qt5/QtCore/qiodevice.h \
+		/usr/include/qt5/QtCore/qpair.h \
+		/usr/include/qt5/QtCore/qregexp.h \
+		/usr/include/qt5/QtCore/qstringmatcher.h \
+		/usr/include/qt5/QtGui/qbrush.h \
+		/usr/include/qt5/QtCore/qvector.h \
+		/usr/include/qt5/QtGui/qmatrix.h \
+		/usr/include/qt5/QtGui/qpolygon.h \
+		/usr/include/qt5/QtGui/qregion.h \
+		/usr/include/qt5/QtCore/qline.h \
+		/usr/include/qt5/QtGui/qtransform.h \
+		/usr/include/qt5/QtGui/qpainterpath.h \
+		/usr/include/qt5/QtGui/qimage.h \
+		/usr/include/qt5/QtGui/qpixmap.h \
+		/usr/include/qt5/QtCore/qsharedpointer.h \
+		/usr/include/qt5/QtCore/qshareddata.h \
+		/usr/include/qt5/QtCore/qsharedpointer_impl.h \
+		/usr/include/qt5/QtCore/qhash.h \
+		/usr/include/qt5/QtGui/qfont.h \
+		/usr/include/qt5/QtGui/qfontmetrics.h \
+		/usr/include/qt5/QtGui/qfontinfo.h \
+		/usr/include/qt5/QtWidgets/qsizepolicy.h \
+		/usr/include/qt5/QtGui/qcursor.h \
+		/usr/include/qt5/QtGui/qkeysequence.h \
+		/usr/include/qt5/QtGui/qevent.h \
+		/usr/include/qt5/QtCore/qvariant.h \
+		/usr/include/qt5/QtCore/qmap.h \
+		/usr/include/qt5/QtCore/qdebug.h \
+		/usr/include/qt5/QtCore/qtextstream.h \
+		/usr/include/qt5/QtCore/qlocale.h \
+		/usr/include/qt5/QtCore/qset.h \
+		/usr/include/qt5/QtCore/qcontiguouscache.h \
+		/usr/include/qt5/QtCore/qurl.h \
+		/usr/include/qt5/QtCore/qurlquery.h \
+		/usr/include/qt5/QtCore/qfile.h \
+		/usr/include/qt5/QtCore/qfiledevice.h \
+		/usr/include/qt5/QtGui/qvector2d.h \
+		/usr/include/qt5/QtGui/qtouchdevice.h \
+		../ie-methods-qt/qwt_mml_document.h \
+		/usr/include/qt5/QtGui/qpainter.h \
+		/usr/include/qt5/QtGui/qtextoption.h \
+		/usr/include/qt5/QtGui/qpen.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o formulaview.o ../ie-methods-qt/formulaview.cpp
+
+iterationmethodcommon.o: ../ie-methods-qt/iterationmethodcommon.cpp ../ie-methods-qt/iterationmethodcommon.h \
+		../ie-methods-qt/iterationmethodpositive.h \
+		../ie-methods-qt/approximation.h \
+		../ie-methods-qt/ietypes.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o iterationmethodcommon.o ../ie-methods-qt/iterationmethodcommon.cpp
 
 iterationmethoddirichletkernel.o: ../ie-methods-qt/iterationmethoddirichletkernel.cpp ../ie-methods-qt/iterationmethoddirichletkernel.h \
 		../ie-methods-qt/mathextensions.h \
@@ -744,17 +1721,21 @@ iterationmethoddirichletkernel.o: ../ie-methods-qt/iterationmethoddirichletkerne
 		../ie-methods-qt/approximation.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o iterationmethoddirichletkernel.o ../ie-methods-qt/iterationmethoddirichletkernel.cpp
 
-iterationmethodcommon.o: ../ie-methods-qt/iterationmethodcommon.cpp ../ie-methods-qt/iterationmethodcommon.h \
-		../ie-methods-qt/iterationmethodpositive.h \
-		../ie-methods-qt/approximation.h \
-		../ie-methods-qt/ietypes.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o iterationmethodcommon.o ../ie-methods-qt/iterationmethodcommon.cpp
-
 mathextensions.o: ../ie-methods-qt/mathextensions.cpp ../ie-methods-qt/mathextensions.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mathextensions.o ../ie-methods-qt/mathextensions.cpp
 
+mathfunctions.o: ../ie-methods-qt/mathfunctions.cpp ../ie-methods-qt/mathfunctions.h \
+		../ie-methods-qt/ietypes.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mathfunctions.o ../ie-methods-qt/mathfunctions.cpp
+
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp
+
+moc_qcustomplot.o: moc_qcustomplot.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_qcustomplot.o moc_qcustomplot.cpp
+
+moc_formulaview.o: moc_formulaview.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_formulaview.o moc_formulaview.cpp
 
 ####### Install
 
