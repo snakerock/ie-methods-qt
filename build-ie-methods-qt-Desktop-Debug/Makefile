@@ -18,7 +18,7 @@ CXXFLAGS      = -m64 -pipe -g -std=c++0x -Wall -W -D_REENTRANT -fPIE $(DEFINES)
 INCPATH       = -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I../ie-methods-qt -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtXml -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtCore -I. -I. -I.
 LINK          = g++
 LFLAGS        = -m64
-LIBS          = $(SUBLIBS) -L/usr/X11R6/lib64 -lQt5Widgets -L/usr/lib/x86_64-linux-gnu -lQt5Xml -lQt5Gui -lQt5Core -lGL -lpthread 
+LIBS          = $(SUBLIBS) -L/usr/X11R6/lib64 -lboost_system -lQt5Widgets -L/usr/lib/x86_64-linux-gnu -lQt5Xml -lQt5Gui -lQt5Core -lGL -lpthread 
 AR            = ar cqs
 RANLIB        = 
 QMAKE         = /usr/lib/x86_64-linux-gnu/qt5/bin/qmake
@@ -48,6 +48,7 @@ OBJECTS_DIR   = ./
 SOURCES       = ../ie-methods-qt/main.cpp \
 		../ie-methods-qt/mainwindow.cpp \
 		../ie-methods-qt/iterationmethodpositive.cpp \
+		../ie-methods-qt/iterationmethodhankel.cpp \
 		../ie-methods-qt/qcustomplot.cpp \
 		../ie-methods-qt/qwt_mml_document.cpp \
 		../ie-methods-qt/qwt_mml_entity_table.cpp \
@@ -55,12 +56,14 @@ SOURCES       = ../ie-methods-qt/main.cpp \
 		../ie-methods-qt/iterationmethodcommon.cpp \
 		../ie-methods-qt/iterationmethoddirichletkernel.cpp \
 		../ie-methods-qt/mathextensions.cpp \
-		../ie-methods-qt/mathfunctions.cpp moc_mainwindow.cpp \
+		../ie-methods-qt/mathfunctions.cpp \
+		../ie-methods-qt/iterationmethodln.cpp moc_mainwindow.cpp \
 		moc_qcustomplot.cpp \
 		moc_formulaview.cpp
 OBJECTS       = main.o \
 		mainwindow.o \
 		iterationmethodpositive.o \
+		iterationmethodhankel.o \
 		qcustomplot.o \
 		qwt_mml_document.o \
 		qwt_mml_entity_table.o \
@@ -69,6 +72,7 @@ OBJECTS       = main.o \
 		iterationmethoddirichletkernel.o \
 		mathextensions.o \
 		mathfunctions.o \
+		iterationmethodln.o \
 		moc_mainwindow.o \
 		moc_qcustomplot.o \
 		moc_formulaview.o
@@ -308,7 +312,7 @@ qmake_all: FORCE
 
 dist: 
 	@test -d .tmp/ie-methods-qt1.0.0 || mkdir -p .tmp/ie-methods-qt1.0.0
-	$(COPY_FILE) --parents $(SOURCES) $(DIST) .tmp/ie-methods-qt1.0.0/ && $(COPY_FILE) --parents ../ie-methods-qt/mainwindow.h ../ie-methods-qt/approximation.h ../ie-methods-qt/iterationmethodpositive.h ../ie-methods-qt/ietypes.h ../ie-methods-qt/qcustomplot.h ../ie-methods-qt/qwt_mml_document.h ../ie-methods-qt/qwt_mml_entity_table.h ../ie-methods-qt/formulaview.h ../ie-methods-qt/iterationmethodcommon.h ../ie-methods-qt/iterationmethoddirichletkernel.h ../ie-methods-qt/mathextensions.h ../ie-methods-qt/mathfunctions.h .tmp/ie-methods-qt1.0.0/ && $(COPY_FILE) --parents ../ie-methods-qt/main.cpp ../ie-methods-qt/mainwindow.cpp ../ie-methods-qt/iterationmethodpositive.cpp ../ie-methods-qt/qcustomplot.cpp ../ie-methods-qt/qwt_mml_document.cpp ../ie-methods-qt/qwt_mml_entity_table.cpp ../ie-methods-qt/formulaview.cpp ../ie-methods-qt/iterationmethodcommon.cpp ../ie-methods-qt/iterationmethoddirichletkernel.cpp ../ie-methods-qt/mathextensions.cpp ../ie-methods-qt/mathfunctions.cpp .tmp/ie-methods-qt1.0.0/ && $(COPY_FILE) --parents ../ie-methods-qt/mainwindow.ui .tmp/ie-methods-qt1.0.0/ && (cd `dirname .tmp/ie-methods-qt1.0.0` && $(TAR) ie-methods-qt1.0.0.tar ie-methods-qt1.0.0 && $(COMPRESS) ie-methods-qt1.0.0.tar) && $(MOVE) `dirname .tmp/ie-methods-qt1.0.0`/ie-methods-qt1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/ie-methods-qt1.0.0
+	$(COPY_FILE) --parents $(SOURCES) $(DIST) .tmp/ie-methods-qt1.0.0/ && $(COPY_FILE) --parents ../ie-methods-qt/mainwindow.h ../ie-methods-qt/approximation.h ../ie-methods-qt/iterationmethodpositive.h ../ie-methods-qt/iterationmethodhankel.h ../ie-methods-qt/ietypes.h ../ie-methods-qt/qcustomplot.h ../ie-methods-qt/qwt_mml_document.h ../ie-methods-qt/qwt_mml_entity_table.h ../ie-methods-qt/formulaview.h ../ie-methods-qt/iterationmethodcommon.h ../ie-methods-qt/iterationmethoddirichletkernel.h ../ie-methods-qt/mathextensions.h ../ie-methods-qt/mathfunctions.h ../ie-methods-qt/types.h ../ie-methods-qt/iterationmethodln.h .tmp/ie-methods-qt1.0.0/ && $(COPY_FILE) --parents ../ie-methods-qt/main.cpp ../ie-methods-qt/mainwindow.cpp ../ie-methods-qt/iterationmethodpositive.cpp ../ie-methods-qt/iterationmethodhankel.cpp ../ie-methods-qt/qcustomplot.cpp ../ie-methods-qt/qwt_mml_document.cpp ../ie-methods-qt/qwt_mml_entity_table.cpp ../ie-methods-qt/formulaview.cpp ../ie-methods-qt/iterationmethodcommon.cpp ../ie-methods-qt/iterationmethoddirichletkernel.cpp ../ie-methods-qt/mathextensions.cpp ../ie-methods-qt/mathfunctions.cpp ../ie-methods-qt/iterationmethodln.cpp .tmp/ie-methods-qt1.0.0/ && $(COPY_FILE) --parents ../ie-methods-qt/mainwindow.ui .tmp/ie-methods-qt1.0.0/ && (cd `dirname .tmp/ie-methods-qt1.0.0` && $(TAR) ie-methods-qt1.0.0.tar ie-methods-qt1.0.0 && $(COMPRESS) ie-methods-qt1.0.0.tar) && $(MOVE) `dirname .tmp/ie-methods-qt1.0.0`/ie-methods-qt1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/ie-methods-qt1.0.0
 
 
 clean:compiler_clean 
@@ -445,10 +449,11 @@ moc_mainwindow.cpp: /usr/include/qt5/QtWidgets/QMainWindow \
 		/usr/include/qt5/QtGui/qtouchdevice.h \
 		/usr/include/qt5/QtWidgets/qtabwidget.h \
 		/usr/include/qt5/QtGui/qicon.h \
-		../ie-methods-qt/iterationmethodcommon.h \
 		../ie-methods-qt/iterationmethodpositive.h \
-		../ie-methods-qt/approximation.h \
 		../ie-methods-qt/ietypes.h \
+		../ie-methods-qt/approximation.h \
+		../ie-methods-qt/types.h \
+		../ie-methods-qt/iterationmethodcommon.h \
 		../ie-methods-qt/mainwindow.h
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) $(INCPATH) -I/usr/include/c++/4.8 -I/usr/include/x86_64-linux-gnu/c++/4.8 -I/usr/include/c++/4.8/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../ie-methods-qt/mainwindow.h -o moc_mainwindow.cpp
 
@@ -1072,10 +1077,11 @@ main.o: ../ie-methods-qt/main.cpp ../ie-methods-qt/mainwindow.h \
 		/usr/include/qt5/QtGui/qtouchdevice.h \
 		/usr/include/qt5/QtWidgets/qtabwidget.h \
 		/usr/include/qt5/QtGui/qicon.h \
-		../ie-methods-qt/iterationmethodcommon.h \
 		../ie-methods-qt/iterationmethodpositive.h \
-		../ie-methods-qt/approximation.h \
 		../ie-methods-qt/ietypes.h \
+		../ie-methods-qt/approximation.h \
+		../ie-methods-qt/types.h \
+		../ie-methods-qt/iterationmethodcommon.h \
 		/usr/include/qt5/QtWidgets/QApplication \
 		/usr/include/qt5/QtWidgets/qapplication.h \
 		/usr/include/qt5/QtCore/qcoreapplication.h \
@@ -1197,10 +1203,11 @@ mainwindow.o: ../ie-methods-qt/mainwindow.cpp ../ie-methods-qt/mainwindow.h \
 		/usr/include/qt5/QtGui/qtouchdevice.h \
 		/usr/include/qt5/QtWidgets/qtabwidget.h \
 		/usr/include/qt5/QtGui/qicon.h \
-		../ie-methods-qt/iterationmethodcommon.h \
 		../ie-methods-qt/iterationmethodpositive.h \
-		../ie-methods-qt/approximation.h \
 		../ie-methods-qt/ietypes.h \
+		../ie-methods-qt/approximation.h \
+		../ie-methods-qt/types.h \
+		../ie-methods-qt/iterationmethodcommon.h \
 		ui_mainwindow.h \
 		/usr/include/qt5/QtCore/QVariant \
 		/usr/include/qt5/QtWidgets/QAction \
@@ -1215,13 +1222,8 @@ mainwindow.o: ../ie-methods-qt/mainwindow.cpp ../ie-methods-qt/mainwindow.h \
 		/usr/include/qt5/QtGui/qinputmethod.h \
 		/usr/include/qt5/QtWidgets/QButtonGroup \
 		/usr/include/qt5/QtWidgets/qbuttongroup.h \
-		/usr/include/qt5/QtWidgets/QHeaderView \
-		/usr/include/qt5/QtWidgets/qheaderview.h \
-		/usr/include/qt5/QtWidgets/qabstractitemview.h \
-		/usr/include/qt5/QtWidgets/qabstractscrollarea.h \
-		/usr/include/qt5/QtWidgets/qframe.h \
-		/usr/include/qt5/QtCore/qabstractitemmodel.h \
-		/usr/include/qt5/QtCore/qitemselectionmodel.h \
+		/usr/include/qt5/QtWidgets/QComboBox \
+		/usr/include/qt5/QtWidgets/qcombobox.h \
 		/usr/include/qt5/QtWidgets/qabstractitemdelegate.h \
 		/usr/include/qt5/QtWidgets/qstyleoption.h \
 		/usr/include/qt5/QtWidgets/qabstractspinbox.h \
@@ -1232,30 +1234,88 @@ mainwindow.o: ../ie-methods-qt/mainwindow.cpp ../ie-methods-qt/mainwindow.h \
 		/usr/include/qt5/QtWidgets/qstyle.h \
 		/usr/include/qt5/QtWidgets/qtabbar.h \
 		/usr/include/qt5/QtWidgets/qrubberband.h \
-		/usr/include/qt5/QtWidgets/QMenuBar \
-		/usr/include/qt5/QtWidgets/qmenubar.h \
-		/usr/include/qt5/QtWidgets/qmenu.h \
-		/usr/include/qt5/QtWidgets/QStatusBar \
-		/usr/include/qt5/QtWidgets/qstatusbar.h \
+		/usr/include/qt5/QtWidgets/qframe.h \
+		/usr/include/qt5/QtCore/qabstractitemmodel.h \
+		/usr/include/qt5/QtWidgets/QDoubleSpinBox \
+		/usr/include/qt5/QtWidgets/qspinbox.h \
+		/usr/include/qt5/QtWidgets/QFrame \
+		/usr/include/qt5/QtWidgets/QGridLayout \
+		/usr/include/qt5/QtWidgets/qgridlayout.h \
+		/usr/include/qt5/QtWidgets/qlayout.h \
+		/usr/include/qt5/QtWidgets/qlayoutitem.h \
+		/usr/include/qt5/QtWidgets/qboxlayout.h \
+		/usr/include/qt5/QtWidgets/QGroupBox \
+		/usr/include/qt5/QtWidgets/qgroupbox.h \
+		/usr/include/qt5/QtWidgets/QHBoxLayout \
+		/usr/include/qt5/QtWidgets/QHeaderView \
+		/usr/include/qt5/QtWidgets/qheaderview.h \
+		/usr/include/qt5/QtWidgets/qabstractitemview.h \
+		/usr/include/qt5/QtWidgets/qabstractscrollarea.h \
+		/usr/include/qt5/QtCore/qitemselectionmodel.h \
+		/usr/include/qt5/QtWidgets/QLabel \
+		/usr/include/qt5/QtWidgets/qlabel.h \
+		/usr/include/qt5/QtWidgets/QPushButton \
+		/usr/include/qt5/QtWidgets/qpushbutton.h \
+		/usr/include/qt5/QtWidgets/qabstractbutton.h \
+		/usr/include/qt5/QtWidgets/QSpacerItem \
+		/usr/include/qt5/QtWidgets/QSpinBox \
 		/usr/include/qt5/QtWidgets/QToolBar \
 		/usr/include/qt5/QtWidgets/qtoolbar.h \
+		/usr/include/qt5/QtWidgets/QVBoxLayout \
 		/usr/include/qt5/QtWidgets/QWidget \
-		/usr/include/qt5/QtCore/QDebug \
+		../ie-methods-qt/formulaview.h \
+		../ie-methods-qt/qcustomplot.h \
+		/usr/include/qt5/QtCore/QObject \
+		/usr/include/qt5/QtCore/QPointer \
+		/usr/include/qt5/QtCore/qpointer.h \
+		/usr/include/qt5/QtGui/QPainter \
+		/usr/include/qt5/QtGui/qpainter.h \
+		/usr/include/qt5/QtGui/qtextoption.h \
+		/usr/include/qt5/QtGui/qpen.h \
+		/usr/include/qt5/QtGui/QPaintEvent \
+		/usr/include/qt5/QtGui/QMouseEvent \
+		/usr/include/qt5/QtGui/QPixmap \
 		/usr/include/qt5/QtCore/QVector \
+		/usr/include/qt5/QtCore/QString \
+		/usr/include/qt5/QtCore/QDateTime \
+		/usr/include/qt5/QtCore/qdatetime.h \
+		/usr/include/qt5/QtCore/QMultiMap \
+		/usr/include/qt5/QtCore/QFlags \
+		/usr/include/qt5/QtCore/QDebug \
+		/usr/include/qt5/QtGui/QVector2D \
+		/usr/include/qt5/QtCore/QStack \
+		/usr/include/qt5/QtCore/qstack.h \
+		/usr/include/qt5/QtCore/QCache \
+		/usr/include/qt5/QtCore/qcache.h \
+		/usr/include/qt5/QtCore/QMargins \
+		/usr/include/qt5/QtCore/qmath.h \
+		/usr/include/qt5/QtCore/qnumeric.h \
+		/usr/include/qt5/QtCore/QtNumeric \
 		/usr/include/qt5/QtWidgets/QFileDialog \
 		/usr/include/qt5/QtWidgets/qfiledialog.h \
 		/usr/include/qt5/QtCore/qdir.h \
 		/usr/include/qt5/QtCore/qfileinfo.h \
 		/usr/include/qt5/QtWidgets/qdialog.h \
-		../ie-methods-qt/iterationmethoddirichletkernel.h \
+		../ie-methods-qt/iterationmethodhankel.h \
 		../ie-methods-qt/mathextensions.h \
+		../ie-methods-qt/iterationmethodln.h \
+		../ie-methods-qt/iterationmethoddirichletkernel.h \
 		../ie-methods-qt/mathfunctions.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../ie-methods-qt/mainwindow.cpp
 
 iterationmethodpositive.o: ../ie-methods-qt/iterationmethodpositive.cpp ../ie-methods-qt/iterationmethodpositive.h \
+		../ie-methods-qt/ietypes.h \
 		../ie-methods-qt/approximation.h \
-		../ie-methods-qt/ietypes.h
+		../ie-methods-qt/types.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o iterationmethodpositive.o ../ie-methods-qt/iterationmethodpositive.cpp
+
+iterationmethodhankel.o: ../ie-methods-qt/iterationmethodhankel.cpp ../ie-methods-qt/iterationmethodhankel.h \
+		../ie-methods-qt/mathextensions.h \
+		../ie-methods-qt/ietypes.h \
+		../ie-methods-qt/iterationmethodpositive.h \
+		../ie-methods-qt/approximation.h \
+		../ie-methods-qt/types.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o iterationmethodhankel.o ../ie-methods-qt/iterationmethodhankel.cpp
 
 qcustomplot.o: ../ie-methods-qt/qcustomplot.cpp ../ie-methods-qt/qcustomplot.h \
 		/usr/include/qt5/QtCore/QObject \
@@ -1710,23 +1770,36 @@ formulaview.o: ../ie-methods-qt/formulaview.cpp ../ie-methods-qt/formulaview.h \
 
 iterationmethodcommon.o: ../ie-methods-qt/iterationmethodcommon.cpp ../ie-methods-qt/iterationmethodcommon.h \
 		../ie-methods-qt/iterationmethodpositive.h \
+		../ie-methods-qt/ietypes.h \
 		../ie-methods-qt/approximation.h \
-		../ie-methods-qt/ietypes.h
+		../ie-methods-qt/types.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o iterationmethodcommon.o ../ie-methods-qt/iterationmethodcommon.cpp
 
 iterationmethoddirichletkernel.o: ../ie-methods-qt/iterationmethoddirichletkernel.cpp ../ie-methods-qt/iterationmethoddirichletkernel.h \
 		../ie-methods-qt/mathextensions.h \
 		../ie-methods-qt/ietypes.h \
 		../ie-methods-qt/iterationmethodpositive.h \
-		../ie-methods-qt/approximation.h
+		../ie-methods-qt/approximation.h \
+		../ie-methods-qt/types.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o iterationmethoddirichletkernel.o ../ie-methods-qt/iterationmethoddirichletkernel.cpp
 
 mathextensions.o: ../ie-methods-qt/mathextensions.cpp ../ie-methods-qt/mathextensions.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mathextensions.o ../ie-methods-qt/mathextensions.cpp
 
 mathfunctions.o: ../ie-methods-qt/mathfunctions.cpp ../ie-methods-qt/mathfunctions.h \
-		../ie-methods-qt/ietypes.h
+		../ie-methods-qt/ietypes.h \
+		../ie-methods-qt/iterationmethodpositive.h \
+		../ie-methods-qt/approximation.h \
+		../ie-methods-qt/types.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mathfunctions.o ../ie-methods-qt/mathfunctions.cpp
+
+iterationmethodln.o: ../ie-methods-qt/iterationmethodln.cpp ../ie-methods-qt/iterationmethodln.h \
+		../ie-methods-qt/mathextensions.h \
+		../ie-methods-qt/ietypes.h \
+		../ie-methods-qt/iterationmethodpositive.h \
+		../ie-methods-qt/approximation.h \
+		../ie-methods-qt/types.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o iterationmethodln.o ../ie-methods-qt/iterationmethodln.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp

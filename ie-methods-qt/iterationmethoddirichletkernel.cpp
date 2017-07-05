@@ -12,17 +12,17 @@ double IterationMethodDirichletKernel::K(double x, double y) const
 }
 
 IterationMethodDirichletKernel::IterationMethodDirichletKernel(
-        complex_fx_t rightPart,
+        fx_t<Complex> rightPart,
         double parameterK,
         double upperBound,
-        double step
+        int partsNumber
         ) :
-    IterationMethodPositive(0.0, upperBound, step),
+    IterationMethodPositive<double>(0.0, upperBound, partsNumber),
     k (parameterK)
 {
-    // Modified right part function F(x) = (integral from 0 to b) (cos(kxt) * Re(f(t)) + sin(kxt) * Im(f(t))) * dt
+    // Modified right part function F(x) = (integral from 0 to stepb) (cos(kxt) * Re(f(t)) + sin(kxt) * Im(f(t))) * dt
     this->fPointer = [this, rightPart] (double x) {
-        fx_t integrand = [this, x, rightPart] (double t) {
+        fx_t<double> integrand = [this, x, rightPart] (double t) {
             Complex ft = rightPart(t);
             return std::cos(this->k * x * t) * ft.real() + std::sin(this->k * x * t) * ft.imag();
         };

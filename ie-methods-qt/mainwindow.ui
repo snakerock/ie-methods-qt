@@ -109,6 +109,31 @@
               <string>exp(ixy)   -  Dirichlet</string>
              </property>
             </item>
+            <item>
+             <property name="text">
+              <string>ln(sqrt((x-y)^2 + h^2))</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>ln(abs(x))</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>ln(abs(x-y))</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>i/4 H[0, 1](kR)</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>ln(1/abs(x-y))</string>
+             </property>
+            </item>
            </widget>
           </item>
           <item>
@@ -146,6 +171,31 @@
               <string>sin(2*pi*x)</string>
              </property>
             </item>
+            <item>
+             <property name="text">
+              <string>1</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>phi(x)/sqrt((x-1)*(x+1))</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>1/sqrt(1-x^2)</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>cos(x)+i*sin(x)</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>1/(2*pi*ln2*sqrt(x*(1-x)))</string>
+             </property>
+            </item>
            </widget>
           </item>
           <item>
@@ -159,7 +209,11 @@
               </widget>
              </item>
              <item row="0" column="1">
-              <widget class="QDoubleSpinBox" name="lowerBoundInput"/>
+              <widget class="QDoubleSpinBox" name="lowerBoundInput">
+               <property name="minimum">
+                <double>-100.000000000000000</double>
+               </property>
+              </widget>
              </item>
              <item row="1" column="0">
               <widget class="QLabel" name="label_2">
@@ -169,7 +223,25 @@
               </widget>
              </item>
              <item row="1" column="1">
-              <widget class="QDoubleSpinBox" name="upperBoundInput"/>
+              <widget class="QDoubleSpinBox" name="upperBoundInput">
+               <property name="minimum">
+                <double>-100.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_8">
+               <property name="text">
+                <string>Kernel parameter:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QDoubleSpinBox" name="kernelParameterInput">
+               <property name="decimals">
+                <number>3</number>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>

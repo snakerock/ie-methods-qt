@@ -14,10 +14,13 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = ie-methods-qt
 TEMPLATE = app
 
+LIBS += \
+       -lboost_system\
 
 SOURCES += main.cpp\
         mainwindow.cpp \
     iterationmethodpositive.cpp \
+    iterationmethodhankel.cpp \
     qcustomplot.cpp \
     qwt_mml_document.cpp \
     qwt_mml_entity_table.cpp \
@@ -25,11 +28,13 @@ SOURCES += main.cpp\
     iterationmethodcommon.cpp \
     iterationmethoddirichletkernel.cpp \
     mathextensions.cpp \
-    mathfunctions.cpp
+    mathfunctions.cpp \
+    iterationmethodln.cpp
 
 HEADERS  += mainwindow.h \
     approximation.h \
     iterationmethodpositive.h \
+    iterationmethodhankel.h \
     ietypes.h \
     qcustomplot.h \
     qwt_mml_document.h \
@@ -38,6 +43,8 @@ HEADERS  += mainwindow.h \
     iterationmethodcommon.h \
     iterationmethoddirichletkernel.h \
     mathextensions.h \
-    mathfunctions.h
+    mathfunctions.h \
+    types.h \
+    iterationmethodln.h
 
 FORMS    += mainwindow.ui

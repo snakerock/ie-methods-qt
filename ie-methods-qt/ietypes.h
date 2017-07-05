@@ -5,8 +5,11 @@
 #include <complex>
 
 using Complex = std::complex<double>;
-using complex_fx_t = std::function<Complex (double)>;
-using fx_t = std::function<double (double)>;
-using fxy_t = std::function<double (double, double)>;
+
+template <typename value_t>
+using fx_t = std::function<value_t (double)>;
+
+template <typename value_t>
+using fxy_t = std::function<value_t (double, double)>;
 
 #endif // IETYPES_H

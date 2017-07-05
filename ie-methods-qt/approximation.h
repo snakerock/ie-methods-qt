@@ -9,14 +9,19 @@
 #include <unordered_map>
 #include <array>
 
-#include "ietypes.h"
+#include "types.h"
 
 // Grid function approximation
-class Approximation
-{
+template <typename value_t>
+class Approximation {
+public:
+    using fx_t = std::function<value_t (double)>;
+    using fxy_t = std::function<value_t (double, double)>;
+    using map_t = std::map<double, value_t>;
+
 private:
     // Grid function values [x, y] = [key, value]
-    std::map<double, double> grid;
+    map_t grid;
 
     // Pointer to exact function if present
     fx_t exactFunction;
@@ -31,17 +36,17 @@ public:
     { }
 
     // Wrap exact function to Approximation
-    Approximation(fx_t &func)
+    Approximation(fx_t func)
         : exactFunction(func), isGridFunction(false)
     { }
 
     // Create grid function approximation by existing values
-    Approximation(std::map<double, double> &gridFunction)
+    Approximation(map_t gridFunction)
         : grid(gridFunction), isGridFunction(true)
     { }
 
     // Add [x, y] as [key, value] to grid
-    void addXY(const double x, const double y)
+    void addXY(const double x, const value_t y)
     {
         if (isGridFunction) {
             grid[x] = y;
@@ -49,23 +54,30 @@ public:
     }
 
     // Get approximated function value by x
-    double F(const double x)
+    value_t F(const double x)
     {
         if (isGridFunction) {
             try {
                 return grid.at(x);
             } catch (std::exception e) {
                 double nearest;
+                double delta = 0;
 
                 for (auto it = grid.begin(); it != grid.end(); it++) {
                     if (it == grid.begin()) {
                         nearest = it->first;
+                        delta = x - nearest;
                     } else {
                         if (x < it->first) {
+                            if (it->first - x < delta) {
+                                nearest = it->first;
+                            }
+
                             break;
                         }
 
                         nearest = it->first;
+                        delta = x - nearest;
                     }
                 }
 
@@ -77,7 +89,7 @@ public:
     }
 
     // Use Approximation as functor, calls F(x)
-    double operator()(const double x)
+    value_t operator()(const double x)
     {
         return F(x);
     }

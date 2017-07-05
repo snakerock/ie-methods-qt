@@ -3,10 +3,12 @@
 
 #include <functional>
 #include <vector>
+#include <limits>
 
-#include "approximation.h"
 #include "ietypes.h"
+#include "approximation.h"
 
+template <typename value_t>
 class IterationMethodPositive
 {
 protected:
@@ -21,16 +23,16 @@ protected:
      */
 
     // Right part pointer
-    fx_t fPointer;
+    fx_t<value_t> fPointer;
 
     // Right part function for concrete right part inherited methods
-    virtual double f(double x) const;
+    virtual value_t f(double x) const;
 
     // Kernel function pointer
-    fxy_t kernelPointer;
+    fxy_t<value_t> kernelPointer;
 
     // Kernel function for concrete kernel inherited methods
-    virtual double K(double x, double y) const;
+    virtual value_t K(double x, double y) const;
 
     // Lower bound
     double a;
@@ -56,14 +58,17 @@ protected:
     // Integration step
     double dx;
 
+    int iterationNumber;
+
     // u[n], current approximation
-    Approximation curU;
+    Approximation<value_t> curU;
 
     // u[n-1]
-    Approximation prevU;
+    Approximation<value_t> prevU;
 
     // Rectangle integration from a to b
-    double integrate(Approximation app) const;
+    value_t integrate(const Approximation<value_t> app) const;
+    value_t integrate(const Approximation<value_t> app, double from, double to, double delta) const;
 
     IterationMethodPositive (
             double lowerBound = 0.0,
@@ -72,34 +77,38 @@ protected:
             );
 
 public:
+
     IterationMethodPositive (
-            fx_t rightPart,
-            fxy_t kernel,
+            fx_t<value_t> rightPart,
+            fxy_t<value_t> kernel,
             double lowerBound = 0.0,
             double upperBound = 1.0,
-            int partsNumber = 1e+3
+            int partsNumber = 1e+3,
+            fx_t<value_t> solution = nullptr
             );
 
-    ~IterationMethodPositive();
+    virtual ~IterationMethodPositive();
 
     // Clean current computed approximations, set u[0] = 0
     virtual void Reinitialize ();
 
     // Iterate n steps next, preserving computed state between calls
-    virtual fx_t Iterate (int n = 1);
+    virtual fx_t<value_t> Iterate (int n = 1);
 
     // Get curU as function pointer
-    virtual fx_t GetCurrentApproximation () const;
+    virtual fx_t<value_t> GetCurrentApproximation () const;
 
     // Get prevU as function pointer
-    virtual fx_t GetPreviousApproximation () const;
+    virtual fx_t<value_t> GetPreviousApproximation () const;
 
     // Get Euclid norm || a(x) - b(x) ||
-    double getDifference(fx_t a, fx_t b);
+    double getDifference(const fx_t<value_t> a, const fx_t<value_t> b);
 
-    fx_t getFPointer() const;
+    int getIterationNumber() const;
 
-    fxy_t getKernelPointer() const;
+    fx_t<value_t> getFPointer() const;
+
+    fxy_t<value_t> getKernelPointer() const;
 
     double getA() const;
     double getB() const;

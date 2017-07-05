@@ -5,7 +5,7 @@
 #include "ietypes.h"
 #include "iterationmethodpositive.h"
 
-class IterationMethodDirichletKernel : public IterationMethodPositive
+class IterationMethodDirichletKernel : public IterationMethodPositive<double>
 {
 protected:
     /*
@@ -30,7 +30,7 @@ protected:
      *                       (F(x) - (integral from 0 to b) K(x,y) * u[n-1](y) * dy)
      * u[n](x) = u[n-1](x) + -------------------------------------------------------,
      *                                                 D(x)
-     * K(x, y) = sin(k * b * (y - x) / (k * (y - x),
+     * K(x, y) = sin(k * b * (y - x) / (k * (y - x)),
      * D(x) = (integral from 0 to b) K(x,y) * dy,
      * F(x) = (integral from 0 to b) (cos(kxt) * Re(f(t)) + sin(kxt) * Im(f(t))) * dt,
      * u[0](x) = 0;
@@ -41,10 +41,10 @@ protected:
 
 public:
     IterationMethodDirichletKernel(
-            complex_fx_t rightPart,
+            fx_t<Complex> rightPart,
             double parameterK = 1.0,
             double upperBound = 1.0,
-            double step = 1e-3
+            int partsNumber= 1e+3
             );
 
     double getParameterK() const;

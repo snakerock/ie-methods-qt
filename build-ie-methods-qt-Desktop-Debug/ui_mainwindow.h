@@ -56,6 +56,8 @@ public:
     QDoubleSpinBox *lowerBoundInput;
     QLabel *label_2;
     QDoubleSpinBox *upperBoundInput;
+    QLabel *label_8;
+    QDoubleSpinBox *kernelParameterInput;
     FormulaView *formulaWidget;
     QSpacerItem *verticalSpacer;
     QFrame *line_2;
@@ -181,6 +183,7 @@ public:
 
         lowerBoundInput = new QDoubleSpinBox(widget);
         lowerBoundInput->setObjectName(QStringLiteral("lowerBoundInput"));
+        lowerBoundInput->setMinimum(-100);
 
         gridLayout_3->addWidget(lowerBoundInput, 0, 1, 1, 1);
 
@@ -191,8 +194,20 @@ public:
 
         upperBoundInput = new QDoubleSpinBox(widget);
         upperBoundInput->setObjectName(QStringLiteral("upperBoundInput"));
+        upperBoundInput->setMinimum(-100);
 
         gridLayout_3->addWidget(upperBoundInput, 1, 1, 1, 1);
+
+        label_8 = new QLabel(widget);
+        label_8->setObjectName(QStringLiteral("label_8"));
+
+        gridLayout_3->addWidget(label_8, 2, 0, 1, 1);
+
+        kernelParameterInput = new QDoubleSpinBox(widget);
+        kernelParameterInput->setObjectName(QStringLiteral("kernelParameterInput"));
+        kernelParameterInput->setDecimals(3);
+
+        gridLayout_3->addWidget(kernelParameterInput, 2, 1, 1, 1);
 
 
         verticalLayout_2->addWidget(widget);
@@ -385,6 +400,11 @@ public:
         kernelType->insertItems(0, QStringList()
          << QApplication::translate("MainWindow", "exp(-(x-y))", 0)
          << QApplication::translate("MainWindow", "exp(ixy)   -  Dirichlet", 0)
+         << QApplication::translate("MainWindow", "ln(sqrt((x-y)^2 + h^2))", 0)
+         << QApplication::translate("MainWindow", "ln(abs(x))", 0)
+         << QApplication::translate("MainWindow", "ln(abs(x-y))", 0)
+         << QApplication::translate("MainWindow", "i/4 H[0, 1](kR)", 0)
+         << QApplication::translate("MainWindow", "ln(1/abs(x-y))", 0)
         );
         label_4->setText(QApplication::translate("MainWindow", "Expected exact solution:", 0));
         expectedSolution->clear();
@@ -393,9 +413,15 @@ public:
          << QApplication::translate("MainWindow", "x", 0)
          << QApplication::translate("MainWindow", "cos(pi*x)", 0)
          << QApplication::translate("MainWindow", "sin(2*pi*x)", 0)
+         << QApplication::translate("MainWindow", "1", 0)
+         << QApplication::translate("MainWindow", "phi(x)/sqrt((x-1)*(x+1))", 0)
+         << QApplication::translate("MainWindow", "1/sqrt(1-x^2)", 0)
+         << QApplication::translate("MainWindow", "cos(x)+i*sin(x)", 0)
+         << QApplication::translate("MainWindow", "1/(2*pi*ln2*sqrt(x*(1-x)))", 0)
         );
         label->setText(QApplication::translate("MainWindow", "Lower integral bound:", 0));
         label_2->setText(QApplication::translate("MainWindow", "Upper intergal bound:", 0));
+        label_8->setText(QApplication::translate("MainWindow", "Kernel parameter:", 0));
         groupBox->setTitle(QApplication::translate("MainWindow", " Method parameters", 0));
         label_3->setText(QApplication::translate("MainWindow", "Grid steps:", 0));
         label_7->setText(QApplication::translate("MainWindow", "Right part error %:", 0));

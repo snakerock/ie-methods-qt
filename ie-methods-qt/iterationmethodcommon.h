@@ -2,9 +2,9 @@
 #define ITERATIONMETHODCOMMON_H
 
 #include "iterationmethodpositive.h"
-#include "ietypes.h"
 
-class IterationMethodCommon : public IterationMethodPositive
+template <typename value_t>
+class IterationMethodCommon : public IterationMethodPositive<value_t>
 {
 protected:
     /*
@@ -36,15 +36,15 @@ protected:
             );
 
 public:
-    IterationMethodCommon (fx_t rightPart,
-            fxy_t kernel,
+    IterationMethodCommon (fx_t<value_t> rightPart,
+            fxy_t<value_t> kernel,
             double lowerBound = 0.0,
             double upperBound = 1.0,
             int partsNumber = 1e+3
             );
 
     // Iterate n steps next, preserving computed state between calls
-    virtual fx_t Iterate (int n = 1) override;
+    virtual fx_t<value_t> Iterate (int n = 1) override;
 
 };
 
